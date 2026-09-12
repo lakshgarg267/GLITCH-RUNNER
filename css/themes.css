@@ -1,0 +1,151 @@
+/* ==========================================================================
+   GLITCH RUNNER - 5 GAME THEMES
+   ========================================================================== */
+
+/* 1. CYBER HACKER (Default)
+   Dark obsidian, vivid toxic green, cyan circuit lines, sharp cybernetic glow */
+[data-theme="cyber-hacker"] {
+  --bg-primary: #06090e;
+  --bg-secondary: #0b1118;
+  --bg-tertiary: #111a24;
+  --bg-card: rgba(11, 17, 24, 0.92);
+  --bg-glass: rgba(17, 26, 36, 0.75);
+
+  --accent-primary: #00ffaa;
+  --accent-primary-rgb: 0, 255, 170;
+  --accent-secondary: #00e5ff;
+  --accent-secondary-rgb: 0, 229, 255;
+  --accent-warning: #ffb700;
+  --accent-danger: #ff0055;
+  --accent-danger-rgb: 255, 0, 85;
+  --accent-purple: #9d4edd;
+
+  --border-color: rgba(0, 255, 170, 0.25);
+  --border-glow: rgba(0, 255, 170, 0.6);
+  --shadow-neon: 0 0 15px rgba(0, 255, 170, 0.35);
+  --shadow-glow: 0 0 25px rgba(0, 255, 170, 0.65);
+
+  --text-main: #e2f1ff;
+  --text-muted: #8ca2bf;
+}
+
+/* 2. NEON CITY (Synthwave & Cyberpunk)
+   Deep dark violet/magenta, hot neon pink and electric cyan */
+[data-theme="neon-city"] {
+  --bg-primary: #0b0714;
+  --bg-secondary: #160d24;
+  --bg-tertiary: #231238;
+  --bg-card: rgba(22, 13, 36, 0.92);
+  --bg-glass: rgba(35, 18, 56, 0.75);
+
+  --accent-primary: #ff007f;
+  --accent-primary-rgb: 255, 0, 127;
+  --accent-secondary: #00f0ff;
+  --accent-secondary-rgb: 0, 240, 255;
+  --accent-warning: #ffe600;
+  --accent-danger: #ff2255;
+  --accent-danger-rgb: 255, 34, 85;
+  --accent-purple: #bd00ff;
+
+  --border-color: rgba(255, 0, 127, 0.3);
+  --border-glow: rgba(0, 240, 255, 0.65);
+  --shadow-neon: 0 0 18px rgba(255, 0, 127, 0.45);
+  --shadow-glow: 0 0 30px rgba(0, 240, 255, 0.6);
+
+  --text-main: #fbe9ff;
+  --text-muted: #af9ac2;
+}
+
+[data-theme="neon-city"] .hero-banner {
+  background: linear-gradient(135deg, rgba(255, 0, 127, 0.15), rgba(0, 240, 255, 0.1), rgba(22, 13, 36, 0.95));
+}
+
+/* 3. MATRIX (The Construct)
+   Pure deep OLED black, monochrome neon phosphor green stream */
+[data-theme="matrix"] {
+  --bg-primary: #020603;
+  --bg-secondary: #051006;
+  --bg-tertiary: #0a1c0d;
+  --bg-card: rgba(5, 16, 6, 0.93);
+  --bg-glass: rgba(10, 28, 13, 0.8);
+
+  --accent-primary: #00ff41;
+  --accent-primary-rgb: 0, 255, 65;
+  --accent-secondary: #39ff14;
+  --accent-secondary-rgb: 57, 255, 20;
+  --accent-warning: #e5ff00;
+  --accent-danger: #ff3333;
+  --accent-danger-rgb: 255, 51, 51;
+  --accent-purple: #00cc66;
+
+  --border-color: rgba(0, 255, 65, 0.28);
+  --border-glow: rgba(57, 255, 20, 0.7);
+  --shadow-neon: 0 0 15px rgba(0, 255, 65, 0.4);
+  --shadow-glow: 0 0 25px rgba(0, 255, 65, 0.7);
+
+  --text-main: #d0ffd6;
+  --text-muted: #64966c;
+}
+
+[data-theme="matrix"] * {
+  font-family: 'Fira Code', Consolas, monospace !important;
+}
+
+/* 4. SPACE STATION (Deep Celestial Void)
+   Deep cosmic navy, starlight pulsar blue, solar flare amber */
+[data-theme="space-station"] {
+  --bg-primary: #060b19;
+  --bg-secondary: #0c1429;
+  --bg-tertiary: #132042;
+  --bg-card: rgba(12, 20, 41, 0.92);
+  --bg-glass: rgba(19, 32, 66, 0.75);
+
+  --accent-primary: #38bdf8;
+  --accent-primary-rgb: 56, 189, 248;
+  --accent-secondary: #818cf8;
+  --accent-secondary-rgb: 129, 140, 248;
+  --accent-warning: #fb923c;
+  --accent-danger: #f43f5e;
+  --accent-danger-rgb: 244, 63, 94;
+  --accent-purple: #c084fc;
+
+  --border-color: rgba(56, 189, 248, 0.25);
+  --border-glow: rgba(56, 189, 248, 0.6);
+  --shadow-neon: 0 0 15px rgba(56, 189, 248, 0.35);
+  --shadow-glow: 0 0 25px rgba(56, 189, 248, 0.65);
+
+  --text-main: #e0f2fe;
+  --text-muted: #94a3b8;
+}
+
+/* 5. RETRO TERMINAL (1980s Phosphor Amber CRT)
+   Warm monochrome amber glowing CRT, retro vibes, heavy scanlines */
+[data-theme="retro-terminal"] {
+  --bg-primary: #0d0801;
+  --bg-secondary: #171004;
+  --bg-tertiary: #241908;
+  --bg-card: rgba(23, 16, 4, 0.93);
+  --bg-glass: rgba(36, 25, 8, 0.8);
+
+  --accent-primary: #ffb000;
+  --accent-primary-rgb: 255, 176, 0;
+  --accent-secondary: #ff8400;
+  --accent-secondary-rgb: 255, 132, 0;
+  --accent-warning: #ffe600;
+  --accent-danger: #ff3300;
+  --accent-danger-rgb: 255, 51, 0;
+  --accent-purple: #e066ff;
+
+  --border-color: rgba(255, 176, 0, 0.35);
+  --border-glow: rgba(255, 176, 0, 0.75);
+  --shadow-neon: 0 0 18px rgba(255, 176, 0, 0.4);
+  --shadow-glow: 0 0 28px rgba(255, 176, 0, 0.75);
+
+  --text-main: #ffdf85;
+  --text-muted: #ad8f4e;
+}
+
+[data-theme="retro-terminal"] .scanline-overlay {
+  opacity: 0.85;
+  background-size: 100% 4px, 4px 100%;
+}

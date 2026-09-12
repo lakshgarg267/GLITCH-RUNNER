@@ -1,11 +1,633 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="cyber-hacker">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GLITCH RUNNER | Enter The Code. Fix The Glitch. Master The World.</title>
+  
+  <!-- Google Fonts: Orbitron, Rajdhani, Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
-    
+
+  <!-- Dynamic Cyber Canvas Background -->
+  <canvas id="bg-canvas"></canvas>
+  
+  <!-- CRT Scanline Aesthetic Overlay -->
+  <div class="scanline-overlay"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <div id="app">
+    <!-- =====================================================================
+         TOP HUD BAR
+         ===================================================================== -->
+    <header class="hud-header">
+      <div class="brand-section">
+        <div class="brand-logo-icon">GR</div>
+        <div class="brand-title glitch-text" data-text="GLITCH RUNNER">GLITCH RUNNER</div>
+      </div>
+
+      <!-- Player Resource Chips -->
+      <div class="hud-stats">
+        <div class="hud-chip hud-chip-level" title="Player Level & XP">
+          <span class="level-badge">LVL <span class="hud-level-val">1</span></span>
+          <div class="xp-bar-mini">
+            <div class="xp-bar-mini-fill" id="hud-xp-fill"></div>
+          </div>
+        </div>
+
+        <div class="hud-chip hud-chip-coin" title="Coins">
+          <span class="icon">🪙</span>
+          <span class="hud-coins-val">120</span>
+        </div>
+
+        <div class="hud-chip hud-chip-star" title="Stars Earned">
+          <span class="icon">⭐</span>
+          <span class="hud-stars-val">0</span>
+        </div>
+
+        <div class="hud-chip hud-chip-streak" title="Daily Login Streak">
+          <span class="icon">🔥</span>
+          <span class="hud-streak-val">1d</span>
+        </div>
+      </div>
+
+      <!-- HUD Actions (Sound, Profile, Settings) -->
+      <div class="hud-actions">
+        <button class="btn-icon-hud" id="btn-hud-sound" title="Toggle Sound">🔊</button>
+        
+        <div class="hud-avatar-btn" id="btn-hud-profile" title="View Profile">
+          <div class="hud-avatar-img hud-avatar-icon">⚡</div>
+          <span class="hud-player-name hud-player-name-val">CodeHunter</span>
+        </div>
+
+        <button class="btn-icon-hud" id="btn-hud-settings" title="Settings">⚙️</button>
+      </div>
+    </header>
+
+    <!-- =====================================================================
+         NAVIGATION DOCK
+         ===================================================================== -->
+    <nav class="nav-dock">
+      <button class="nav-tab active" data-view="home">
+        <span>🏠</span> <span>HUB</span>
+      </button>
+      <button class="nav-tab" data-view="worlds">
+        <span>🌍</span> <span>WORLDS</span>
+      </button>
+      <button class="nav-tab" onclick="window.App.openProfileModal()">
+        <span>👤</span> <span>PROFILE</span>
+      </button>
+      <button class="nav-tab" onclick="window.Daily.openDailyModal()">
+        <span>🔥</span> <span>DAILY &amp; STREAK</span>
+      </button>
+      <button class="nav-tab" onclick="window.Store.openStore()">
+        <span>🛒</span> <span>STORE</span>
+      </button>
+      <button class="nav-tab" onclick="window.Achievements.openModal()">
+        <span>🏆</span> <span>ACHIEVEMENTS</span>
+      </button>
+      <button class="nav-tab" onclick="window.Leaderboard.openModal()">
+        <span>🏅</span> <span>LEADERBOARD</span>
+      </button>
+    </nav>
+
+    <!-- =====================================================================
+         MAIN VIEWPORT
+         ===================================================================== -->
+    <main class="view-container">
+
+      <!-- VIEW 1: HOME / HUB -->
+      <section id="view-home" class="view-section active">
+        <!-- Hero Adventure Banner -->
+        <div class="hero-banner">
+          <div class="hero-tag">⚡ MISSION STATUS: CODE MATRIX INFECTED</div>
+          <h1 class="hero-title">ENTER THE CODE.<br>FIX THE GLITCH.<br>MASTER THE WORLD.</h1>
+          <p class="hero-subtitle">Travel across 10 programming language worlds, conquer 50+ progressive levels per sector, and slay epic code bosses.</p>
+          <div class="hero-actions">
+            <button class="btn-cyber-primary" id="btn-continue-journey">
+              ▶ CONTINUE EXPEDITION
+            </button>
+            <button class="btn-cyber-secondary" id="btn-explore-worlds">
+              🗺️ EXPLORE WORLDS
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Stats & Daily Alert -->
+        <div class="home-quick-grid">
+          <div class="cyber-card">
+            <div class="cyber-card-header">
+              <div class="cyber-card-title">📊 HUNTER TELEMETRY</div>
+            </div>
+            <div class="stats-summary-row">
+              <div class="stat-box">
+                <div class="stat-box-val" id="home-stat-levels">0</div>
+                <div class="stat-box-label">Levels Cleared</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-box-val" id="home-stat-score">0</div>
+                <div class="stat-box-label">Total Score</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-box-val" id="home-stat-rank">BEGINNER</div>
+                <div class="stat-box-label">Hunter Rank</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-box-val" id="home-stat-coins">120</div>
+                <div class="stat-box-label">Coins 🪙</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Challenge Alert Widget -->
+          <div class="cyber-card daily-widget">
+            <div class="cyber-card-header">
+              <div class="cyber-card-title">🎁 DAILY GLITCH ALERT</div>
+            </div>
+            <div class="daily-mission-preview">
+              <div class="daily-tags">
+                <span class="tag-badge lang">JavaScript</span>
+                <span class="tag-badge hard">HARD</span>
+              </div>
+              <p style="font-size: 0.95rem; font-weight: 600;">High-priority corruption detected in sector reduction stream.</p>
+              <div class="daily-reward-row">
+                <span>Reward:</span>
+                <span style="color: var(--accent-warning); font-weight: 800;">+200 XP &bull; +100 🪙 &bull; ⭐</span>
+              </div>
+              <button class="btn-cyber-primary" id="btn-home-daily" style="font-size: 0.85rem; padding: 0.6rem 1rem;">
+                🔥 ACCEPT DAILY GLITCH
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 Programming Worlds Section -->
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">PROGRAMMING WORLDS (51 MISSIONS EACH)</h2>
+            <p class="section-desc">Select a language sector to neutralize bugs, solve puzzles, and slay 7 boss beasts.</p>
+          </div>
+        </div>
+
+        <div class="worlds-grid" id="home-worlds-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- VIEW 2: WORLDS BROWSER -->
+      <section id="view-worlds" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">ALL 10 PROGRAMMING WORLDS</h2>
+            <p class="section-desc">Complete learning roadmaps from foundational variables to final language mastery battles.</p>
+          </div>
+          <div class="worlds-filter-tabs">
+            <button class="filter-btn active" data-filter="all">ALL</button>
+            <button class="filter-btn" data-filter="free">FREE (5)</button>
+            <button class="filter-btn" data-filter="premium">PREMIUM (5)</button>
+          </div>
+        </div>
+
+        <div class="worlds-grid" id="all-worlds-grid">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- VIEW 3: LANGUAGE WORLD LEVEL MAP (7 SECTORS / 51 LEVELS) -->
+      <section id="view-world-map" class="view-section">
+        <div class="world-map-header">
+          <div class="world-map-info">
+            <button class="btn-cyber-secondary" id="btn-map-back" style="padding: 0.5rem 1rem;">
+              ← BACK TO WORLDS
+            </button>
+            <span style="font-size: 2.25rem;" id="map-world-icon">🟡</span>
+            <div>
+              <h2 class="map-world-title" id="map-world-name">JAVASCRIPT WORLD</h2>
+              <p style="color: var(--text-muted); font-size: 0.85rem;">Conquer all 7 areas and defeat the 7 sector bosses.</p>
+            </div>
+          </div>
+
+          <div class="world-map-stats">
+            <div class="hud-chip" style="background: rgba(255, 230, 0, 0.15); border-color: #ffe600; color: #ffe600;">
+              <span>⭐</span> <span id="map-stars-count">0</span> Stars
+            </div>
+            <div class="hud-chip">
+              <span>⚡ Completion:</span> <span id="map-progress-percent" style="color: var(--accent-primary);">0/51 (0%)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7 Areas / Sector Selector Tabs -->
+        <div class="map-areas-selector" id="map-areas-selector">
+          <!-- Injected via worldMap.js -->
+        </div>
+
+        <!-- Visual Circuit Map Container -->
+        <div class="map-canvas-wrapper">
+          <div class="circuit-path-track">
+            <div class="circuit-connection-line">
+              <div class="circuit-line-fill" id="map-circuit-fill"></div>
+            </div>
+            <div id="map-nodes-container" style="display: flex; gap: 2.8rem; align-items: center; position: relative; z-index: 2;">
+              <!-- Populated dynamically via worldMap.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: MISSION GAMEPLAY ARENA (ACTION GAME STAGE) -->
+      <section id="view-arena" class="view-section">
+
+        <!-- Mission Objective & Lore Bar -->
+        <div class="mission-objective-bar">
+          <div class="mission-lore-box">
+            <div class="mission-code-badge" id="mission-code-display">JAVASCRIPT // AREA 1: TRAINING CAMP</div>
+            <div class="mission-title-text" id="mission-title-display">MISSION 01: THE SYNTAX BREACH</div>
+            <div class="mission-story-desc" id="mission-story-display">Repair the corrupted terminal to stabilize the local grid.</div>
+          </div>
+          <div id="mission-status-indicator">
+            <span class="mode-tag glitch" id="arena-mode-tag">🐛 GLITCH HUNTER</span>
+          </div>
+        </div>
+
+        <!-- 🎮 VISUAL ACTION GAME STAGE PLATFORM -->
+        <div class="game-stage-arena" id="stage-arena-platform">
+          <!-- Operative Side -->
+          <div class="stage-fighter player" id="stage-player-entity">
+            <div class="fighter-avatar" id="stage-player-avatar">⚡</div>
+            <div class="fighter-aura"></div>
+            <div class="fighter-name-tag" id="stage-player-name">CodeHunter</div>
+            <div class="fighter-meter-bar">
+              <div class="fighter-meter-fill" id="stage-player-fill"></div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--accent-secondary); font-weight: 800;" id="stage-player-hp-val">3 / 3 LIVES</span>
+          </div>
+
+          <!-- Combat Center (Combo Meter, Floating Damage, Laser Trajectory) -->
+          <div class="stage-combat-center" id="stage-combat-center">
+            <div class="combo-badge" id="stage-combo-badge" style="display: none;">
+              <span>🔥 COMBO:</span> <span class="combo-multiplier-val" id="stage-combo-val">1.5x</span>
+            </div>
+            <!-- Timer Display for Timed Modes -->
+            <div class="arena-timer" id="arena-timer-box" style="display: none;">
+              <span>⏱️</span>
+              <span id="arena-timer-value">40s</span>
+            </div>
+          </div>
+
+          <!-- Target Glitch / Boss Side -->
+          <div class="stage-fighter target" id="stage-target-entity">
+            <div class="target-dialogue-bubble" id="stage-target-bubble">"Syntax corrupted!"</div>
+            <div class="fighter-avatar" id="stage-target-avatar">👾</div>
+            <div class="fighter-name-tag" id="stage-target-name" style="color: var(--accent-danger);">GLITCH NODE</div>
+            <div class="fighter-meter-bar" style="border-color: var(--accent-danger);">
+              <div class="fighter-meter-fill" id="stage-target-fill" style="background: linear-gradient(90deg, #ff0055, #ff5500);"></div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--accent-danger); font-weight: 800;" id="stage-target-hp-val">100% Corrupted</span>
+          </div>
+        </div>
+
+        <!-- Status HUD Strip (Hearts, Shield) -->
+        <div class="arena-hud">
+          <div class="arena-hud-left">
+            <span style="font-family: var(--font-display); font-size: 0.85rem; font-weight: 800; color: var(--text-muted);">
+              OPERATIVE INTEGRITY:
+            </span>
+            <div class="player-lives" title="Operative Health">
+              <span class="heart-icon">❤️</span>
+              <span class="heart-icon">❤️</span>
+              <span class="heart-icon">❤️</span>
+            </div>
+            <span class="shield-badge" id="arena-shield-badge" style="display: none;">
+              🛡️ SHIELD PRIMED
+            </span>
+          </div>
+
+          <div class="arena-hud-center">
+            <span style="font-family: var(--font-display); font-size: 0.85rem; font-weight: 800; color: var(--accent-secondary);" id="arena-title">
+              Active Mission
+            </span>
+          </div>
+        </div>
+
+        <!-- Concept Intel Bar -->
+        <div class="concept-intel-bar" id="arena-concept-box">
+          <span style="font-size: 1.4rem;">💡</span>
+          <div>
+            <div class="concept-intel-title">CONCEPT INTEL:</div>
+            <div class="concept-intel-text" id="concept-text">Variables store data for computation.</div>
+          </div>
+        </div>
+
+        <!-- Playable Coding Terminal Area (Dynamically rendered based on Mode) -->
+        <div id="arena-playable-area">
+          <!-- Injected via gameEngine.js -->
+        </div>
+
+        <!-- Power-Ups Tray -->
+        <div class="powerups-tray">
+          <span style="font-family: var(--font-display); font-size: 0.85rem; font-weight: 800; color: var(--text-muted);">
+            ⚡ TACTICAL POWER-UPS:
+          </span>
+          <div class="powerups-list">
+            <button class="btn-powerup" id="btn-use-hint" title="Reveal clue / discard false options">
+              <span>💡 Hint</span>
+              <span class="powerup-count-badge" id="count-hint">3</span>
+            </button>
+            <button class="btn-powerup" id="btn-use-time" title="Add +20s to timer">
+              <span>⏱️ +20s</span>
+              <span class="powerup-count-badge" id="count-time">2</span>
+            </button>
+            <button class="btn-powerup" id="btn-use-life" title="Restore 1 Heart">
+              <span>❤️ Restore</span>
+              <span class="powerup-count-badge" id="count-life">2</span>
+            </button>
+            <button class="btn-powerup" id="btn-use-shield" title="Absorbs 1 mistake">
+              <span>🛡️ Shield</span>
+              <span class="powerup-count-badge" id="count-shield">1</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- =====================================================================
+         MODAL 1: RESULT SCREEN OVERLAY
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-result">
+      <div class="modal-content">
+        <h2 class="result-title victory" id="result-title-text">GLITCH DEFEATED! ⚡</h2>
+        
+        <div class="result-stars-row">
+          <span class="result-star" id="star-slot-1">⭐</span>
+          <span class="result-star" id="star-slot-2">⭐</span>
+          <span class="result-star" id="star-slot-3">⭐</span>
+        </div>
+
+        <div class="result-rewards-grid">
+          <div class="reward-card">
+            <div class="reward-card-value" id="result-xp-val">+150 XP</div>
+            <div class="reward-card-label">Experience</div>
+          </div>
+          <div class="reward-card">
+            <div class="reward-card-value" id="result-coins-val">+50 🪙</div>
+            <div class="reward-card-label">Coins Gained</div>
+          </div>
+          <div class="reward-card">
+            <div class="reward-card-value" id="result-accuracy-val">100%</div>
+            <div class="reward-card-label">Integrity &amp; Combo</div>
+          </div>
+          <div class="reward-card">
+            <div class="reward-card-value" id="result-time-val">28s</div>
+            <div class="reward-card-label">Solve Time</div>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-cyber-primary" id="btn-result-next">NEXT MISSION ▶</button>
+          <button class="btn-cyber-secondary" id="btn-result-retry">RETRY</button>
+          <button class="btn-cyber-secondary" id="btn-result-map">WORLD MAP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 2: GAME OVER OVERLAY
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-gameover">
+      <div class="modal-content" style="border-color: var(--accent-danger);">
+        <h2 class="result-title defeat">OPERATIVE DOWN</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">The glitch corrupted your shields. Restore lives or re-engage from checkpoint.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+          <button class="btn-cyber-primary" id="btn-gameover-revive" style="background: linear-gradient(135deg, #ff0055, #ff5500);">
+            ❤️ RESTORE LIVES (50 🪙)
+          </button>
+          <button class="btn-cyber-secondary" id="btn-gameover-retry">
+            🔄 RETRY MISSION
+          </button>
+          <button class="btn-cyber-secondary" id="btn-gameover-home">
+            🏠 RETURN TO HUB
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 3: PLAYER PROFILE
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-profile">
+      <div class="modal-content large-modal">
+        <div class="modal-header-row">
+          <div class="modal-header-title">👤 GLITCH HUNTER DOSSIER</div>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+
+        <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem;">
+          <div style="width: 72px; height: 72px; border-radius: 50%; background: var(--bg-tertiary); border: 2px solid var(--accent-primary); display: grid; place-items: center; font-size: 2.5rem;" id="profile-avatar-display">
+            ⚡
+          </div>
+          <div style="flex: 1;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="text" id="profile-username-input" value="CodeHunter" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: #fff; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; width: 180px;">
+              <button class="filter-btn" id="btn-save-username">SAVE</button>
+            </div>
+            <div style="display: flex; gap: 0.75rem; margin-top: 0.4rem; align-items: center;">
+              <span class="level-badge" id="profile-level-badge">LEVEL 1</span>
+              <span style="color: var(--accent-secondary); font-family: var(--font-display); font-weight: 800;" id="profile-rank-title">BEGINNER</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-summary-row" style="margin-bottom: 1.5rem;">
+          <div class="stat-box">
+            <div class="stat-box-val" id="profile-coins-val">120</div>
+            <div class="stat-box-label">Coins 🪙</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-val" id="profile-stars-val">0</div>
+            <div class="stat-box-label">Stars ⭐</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-val" id="profile-score-val">0</div>
+            <div class="stat-box-label">Score</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-val" id="profile-streak-val">1 Day</div>
+            <div class="stat-box-label">Streak 🔥</div>
+          </div>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-size: 1rem; color: var(--accent-primary);">SECTOR PROFICIENCY (51 LEVELS EACH):</h3>
+        <div class="profile-lang-list" id="profile-languages-list">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 4: DAILY CHALLENGE & 7-DAY STREAK
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-daily">
+      <div class="modal-content large-modal">
+        <div class="modal-header-row">
+          <div class="modal-header-title">🔥 7-DAY STREAK PROTOCOL</div>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Return daily to collect escalating coin rewards and keep your hacker momentum alive!</p>
+
+        <div class="streak-days-grid" id="daily-streak-calendar">
+          <!-- Injected via daily.js -->
+        </div>
+
+        <button class="btn-cyber-primary" id="btn-claim-streak" style="width: 100%; margin-bottom: 2rem;">
+          🔥 CLAIM DAILY REWARD
+        </button>
+
+        <div class="cyber-card daily-widget" style="margin-bottom: 0;">
+          <div class="cyber-card-header">
+            <div class="cyber-card-title">🎯 TODAY'S GLITCH SPECIAL</div>
+          </div>
+          <p style="margin-bottom: 1rem;">JavaScript Protocol: Resolve high-urgency Array reduction glitch under a 45s timer.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: var(--accent-warning); font-weight: 800;">REWARD: +200 XP &bull; +100 🪙 &bull; ⭐</span>
+            <button class="btn-cyber-primary" id="btn-start-daily-mission" style="padding: 0.6rem 1.25rem;">
+              ⚡ ENGAGE MISSION
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 5: STORE
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-store">
+      <div class="modal-content large-modal">
+        <div class="modal-header-row">
+          <div class="modal-header-title">🛒 CYBER MARKETPLACE</div>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+
+        <div class="worlds-filter-tabs">
+          <button class="filter-btn store-tab-btn active" data-cat="powerups">POWER-UPS</button>
+          <button class="filter-btn store-tab-btn" data-cat="avatars">AVATARS</button>
+          <button class="filter-btn store-tab-btn" data-cat="themes">THEMES</button>
+        </div>
+
+        <div class="store-grid" id="store-items-grid">
+          <!-- Injected via store.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 6: ACHIEVEMENTS
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-achievements">
+      <div class="modal-content large-modal">
+        <div class="modal-header-row">
+          <div class="modal-header-title">🏆 HALL OF ACHIEVEMENTS</div>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+
+        <div class="achievements-grid" id="achievements-grid-list">
+          <!-- Injected via achievements.js -->
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 7: LEADERBOARD
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-leaderboard">
+      <div class="modal-content large-modal">
+        <div class="modal-header-row">
+          <div class="modal-header-title">🏅 GLOBAL LEADERBOARD</div>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>RANK</th>
+              <th>OPERATIVE</th>
+              <th>LEVEL</th>
+              <th>SCORE</th>
+              <th>STARS</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <!-- Injected via leaderboard.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         MODAL 8: SETTINGS
+         ===================================================================== -->
+    <div class="modal-backdrop" id="modal-settings">
+      <div class="modal-content" style="text-align: left;">
+        <div class="modal-header-row">
+          <div class="modal-header-title">⚙️ SYSTEM CONFIG</div>
+          <button class="btn-close-modal">&times;</button>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="font-weight: 700;">Synthesizer Audio Effects:</label>
+            <input type="checkbox" id="setting-sound-toggle" checked style="width: 20px; height: 20px;">
+          </div>
+
+          <div>
+            <label style="font-weight: 700; display: block; margin-bottom: 0.5rem;">Visual Theme Engine:</label>
+            <select id="setting-theme-select" style="width: 100%; padding: 0.6rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: #fff; border-radius: var(--radius-sm); font-family: var(--font-display);">
+              <option value="cyber-hacker">1. Cyber Hacker (Emerald &amp; Dark Terminal)</option>
+              <option value="neon-city">2. Neon City (Synthwave Magenta &amp; Cyan)</option>
+              <option value="matrix">3. The Matrix (OLED Black &amp; Digital Rain)</option>
+              <option value="space-station">4. Space Station (Pulsar Blue &amp; Celestial)</option>
+              <option value="retro-terminal">5. Retro Terminal (Amber Phosphor CRT)</option>
+            </select>
+          </div>
+
+          <hr style="border-color: rgba(255, 255, 255, 0.08); margin: 0.5rem 0;">
+
+          <div>
+            <label style="font-weight: 700; color: var(--accent-danger); display: block; margin-bottom: 0.4rem;">Reset Data:</label>
+            <button class="btn-cyber-secondary" id="btn-reset-game" style="border-color: var(--accent-danger); color: var(--accent-danger); width: 100%;">
+              ⚠️ RESET ALL LOCAL SAVE PROGRESS
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- /#app -->
+
+  <!-- Modular JavaScript Scripts -->
+  <script src="js/state.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/visualFx.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/gameEngine.js"></script>
+  <script src="js/worldMap.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/achievements.js"></script>
+  <script src="js/daily.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
