@@ -126,15 +126,17 @@ class WorldMapEngine {
       else if (isUnlocked) nodeClass += ' active-current';
       else nodeClass += ' locked';
 
-      const icon = this.getNodeIcon(lvl.mode);
+      const icon = lvl.levelNumber === 51 ? '👑' : this.getNodeIcon(lvl.mode);
 
       html += `
         <div class="${nodeClass}" data-level-id="${lvl.id}" data-unlocked="${isUnlocked}">
           <div class="node-circle">
             ${icon}
             ${!isUnlocked ? '<div class="node-lock-badge">🔒</div>' : ''}
+            ${lvl.mode === 'boss' ? '<div class="node-boss-badge">BOSS</div>' : ''}
           </div>
-          <div class="node-label">${lvl.title.length > 18 ? lvl.title.substring(0, 16) + '...' : lvl.title}</div>
+          <div class="node-mission-num">LVL ${lvl.levelNumber}</div>
+          <div class="node-label">${lvl.title.length > 20 ? lvl.title.substring(0, 18) + '...' : lvl.title}</div>
           <div class="node-stars">
             ${isCompleted ? '⭐'.repeat(starsEarned) : (isUnlocked ? 'READY' : 'LOCKED')}
           </div>
@@ -164,10 +166,14 @@ class WorldMapEngine {
 
   getNodeIcon(mode) {
     switch (mode) {
-      case 'glitch': return '🐛';
-      case 'runner': return '🏃';
+      case 'completion': return '✍️';
       case 'detective': return '🔍';
+      case 'glitch': return '🐛';
+      case 'debug': return '🛠️';
+      case 'runner': return '🏃';
       case 'builder': return '🧩';
+      case 'logic': return '⚡';
+      case 'concept': return '💡';
       case 'boss': return '👹';
       default: return '⚡';
     }

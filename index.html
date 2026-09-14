@@ -334,6 +334,38 @@
           <!-- Injected via gameEngine.js -->
         </div>
 
+        <!-- Mission Intel / Concept Explanation Drawer -->
+        <div class="explanation-drawer" id="arena-explanation-drawer" style="display: none;">
+          <div class="explanation-drawer-backdrop" id="explanation-drawer-backdrop"></div>
+          <div class="explanation-drawer-panel">
+            <div class="drawer-header">
+              <div class="drawer-title-row">
+                <span class="drawer-badge">⚡ MISSION DEBRIEF</span>
+                <h3 class="drawer-title" id="drawer-level-title">CONCEPT INTEL</h3>
+              </div>
+              <button class="drawer-close-btn" id="btn-drawer-close" title="Close Intel">&times;</button>
+            </div>
+            <div class="drawer-body">
+              <div class="drawer-section">
+                <div class="drawer-section-label">🧠 CORE MECHANIC &amp; WHY IT WORKS:</div>
+                <div class="drawer-explanation-text" id="drawer-explanation-content"></div>
+              </div>
+              <div class="drawer-pro-tip" id="drawer-pro-tip-box">
+                <span class="pro-tip-icon">💡</span>
+                <div>
+                  <strong style="color: var(--accent-warning); font-size: 0.85rem; font-family: var(--font-display);">TACTICAL PRO TIP:</strong>
+                  <div class="pro-tip-text" id="drawer-pro-tip-content"></div>
+                </div>
+              </div>
+            </div>
+            <div class="drawer-footer">
+              <button class="btn-cyber-primary btn-drawer-continue" id="btn-drawer-continue">
+                CONTINUE TO REWARD RESULTS ⚡
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Power-Ups Tray -->
         <div class="powerups-tray">
           <span style="font-family: var(--font-display); font-size: 0.85rem; font-weight: 800; color: var(--text-muted);">
@@ -621,6 +653,19 @@
   <script src="js/state.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/visualFx.js"></script>
+  
+  <!-- 10 Language Curriculums -->
+  <script src="js/curriculum/javascript.js"></script>
+  <script src="js/curriculum/python.js"></script>
+  <script src="js/curriculum/c.js"></script>
+  <script src="js/curriculum/java.js"></script>
+  <script src="js/curriculum/html.js"></script>
+  <script src="js/curriculum/cpp.js"></script>
+  <script src="js/curriculum/csharp.js"></script>
+  <script src="js/curriculum/go.js"></script>
+  <script src="js/curriculum/ruby.js"></script>
+  <script src="js/curriculum/swift.js"></script>
+
   <script src="js/levels.js"></script>
   <script src="js/gameEngine.js"></script>
   <script src="js/worldMap.js"></script>

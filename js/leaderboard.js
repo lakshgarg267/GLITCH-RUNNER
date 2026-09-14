@@ -4,8 +4,8 @@
  */
 
 window.DEMO_LEADERBOARD = [
-  { rank: 1, avatar: '🤖', name: 'HexOverlord', level: 42, score: 28400, stars: 84, xp: 14200 },
-  { rank: 2, avatar: '🥷', name: 'SyntaxSlayer', level: 38, score: 23900, stars: 72, xp: 11950 },
+  { rank: 1, avatar: '🤖', name: 'lakshay', level: 42, score: 28400, stars: 84, xp: 14200 },
+  { rank: 2, avatar: '🥷', name: 'kunal', level: 38, score: 23900, stars: 72, xp: 11950 },
   { rank: 3, avatar: '👾', name: 'NullPointerDemon', level: 34, score: 19200, stars: 65, xp: 9600 },
   { rank: 4, avatar: '🧙', name: 'ByteValkyrie', level: 29, score: 15800, stars: 54, xp: 7900 },
   { rank: 5, avatar: '⚡', name: 'GhostInTheCode', level: 25, score: 12400, stars: 48, xp: 6200 },

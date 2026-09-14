@@ -192,12 +192,16 @@ class GameEngine {
 
   getModeLabel(mode) {
     switch (mode) {
-      case 'glitch': return '🐛 GLITCH HUNTER';
-      case 'runner': return '🏃 CODE RUNNER';
+      case 'completion': return '✍️ CODE COMPLETION';
       case 'detective': return '🔍 OUTPUT DETECTIVE';
+      case 'glitch': return '🐛 BUG HUNTER';
+      case 'debug': return '🛠️ DEBUG MISSION';
+      case 'runner': return '🏃 SPEED RUN';
       case 'builder': return '🧩 CODE BUILDER';
+      case 'logic': return '⚡ LOGIC CHALLENGE';
+      case 'concept': return '💡 ARCHITECT CONCEPT';
       case 'boss': return '👹 BOSS BATTLE';
-      default: return '🎯 MISSION';
+      default: return '🎯 CODING MISSION';
     }
   }
 
@@ -267,9 +271,29 @@ class GameEngine {
 
   renderStandardChallenge(container) {
     const lvl = this.currentLevel;
+
+    // Fisher-Yates shuffle options while preserving origIdx mapping
+    const rawOptions = lvl.options || ['Option A', 'Option B', 'Option C', 'Option D'];
+    const shuffled = rawOptions.map((opt, origIdx) => ({ text: opt, origIdx }));
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    this.currentShuffledOptions = shuffled;
+
+    // Code formatting: in completion mode, highlight '___' blanks
+    let formattedCode = lvl.code ? this.escapeHtml(lvl.code) : '';
+    if (lvl.mode === 'completion' && formattedCode) {
+      formattedCode = formattedCode.replace(/___/g, '<span class="code-blank">___</span>');
+    }
+
     container.innerHTML = `
-      <div class="challenge-card">
-        <div class="challenge-prompt">${lvl.question}</div>
+      <div class="challenge-card mode-${lvl.mode || 'detective'}">
+        <div class="challenge-header-bar">
+          <span class="challenge-mode-badge ${lvl.mode}">${this.getModeLabel(lvl.mode)}</span>
+          <span class="challenge-level-indicator">MISSION #${lvl.levelNumber}</span>
+        </div>
+        <div class="challenge-prompt">${this.escapeHtml(lvl.question)}</div>
         
         ${lvl.code ? `
           <div class="code-terminal">
@@ -281,15 +305,18 @@ class GameEngine {
               </div>
               <span>${lvl.worldId}.terminal // mission_${lvl.levelNumber}</span>
             </div>
-            <pre class="code-body"><code>${this.escapeHtml(lvl.code)}</code></pre>
+            <pre class="code-body"><code>${formattedCode}</code></pre>
           </div>
         ` : ''}
 
+        <!-- Inline Diagnostic Compiler Error Feedback -->
+        <div class="diagnostic-feedback-box" id="diagnostic-feedback-box" style="display: none;"></div>
+
         <div class="options-grid" id="mission-options-grid">
-          ${lvl.options.map((opt, idx) => `
-            <button class="option-btn" data-index="${idx}">
-              <span class="option-key-badge">${idx + 1}</span>
-              <span>${this.escapeHtml(opt)}</span>
+          ${this.currentShuffledOptions.map((item, screenIdx) => `
+            <button class="option-btn" data-orig-index="${item.origIdx}">
+              <span class="option-key-badge">${screenIdx + 1}</span>
+              <span>${this.escapeHtml(item.text)}</span>
             </button>
           `).join('')}
         </div>
@@ -298,8 +325,8 @@ class GameEngine {
 
     container.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const choiceIdx = parseInt(btn.getAttribute('data-index'));
-        this.handleStandardAnswer(choiceIdx, btn);
+        const origIdx = parseInt(btn.getAttribute('data-orig-index'));
+        this.handleStandardAnswer(origIdx, btn);
       });
     });
   }
@@ -412,7 +439,7 @@ class GameEngine {
       if (window.VisualFx) {
         window.VisualFx.toast('PIPELINE COMPILED! TARGET PURIFIED.', '⚡', 'success');
       }
-      setTimeout(() => this.finishLevel(true), 800);
+      setTimeout(() => this.openExplanationDrawer(), 800);
     } else {
       if (window.Sound) window.Sound.playError();
       if (window.VisualFx) {
@@ -426,17 +453,28 @@ class GameEngine {
 
   renderBossPhase(container) {
     const phases = this.currentLevel.phases || [
-      { q: 'Boss Challenge Phase', opts: ['Option A', 'Option B'], a: 0 }
+      { question: 'Boss Challenge Phase', options: ['Option A', 'Option B'], correctAnswer: 0 }
     ];
     const phase = phases[this.bossPhaseIndex];
     if (!phase) {
-      this.finishLevel(true);
+      this.openExplanationDrawer();
       return;
     }
 
+    const phaseOptions = phase.options || phase.opts || [];
+    const phaseAnswer = phase.correctAnswer !== undefined ? phase.correctAnswer : (phase.a !== undefined ? phase.a : 0);
+
+    // Fisher-Yates shuffle boss options while preserving origIdx mapping
+    const shuffled = phaseOptions.map((opt, origIdx) => ({ text: opt, origIdx }));
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    this.currentBossShuffledOptions = shuffled;
+
     container.innerHTML = `
-      <div class="challenge-card" style="border-color: var(--accent-danger);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+      <div class="challenge-card boss-card" style="border-color: var(--accent-danger);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
           <span style="font-family: var(--font-display); font-weight: 900; color: var(--accent-danger); font-size: 0.85rem;">
             ⚔️ BOSS ENCOUNTER — PHASE ${this.bossPhaseIndex + 1} OF ${phases.length}
           </span>
@@ -444,12 +482,30 @@ class GameEngine {
             Boss HP: ${this.bossHp} / ${this.bossMaxHp}
           </span>
         </div>
-        <div class="challenge-prompt">${phase.q}</div>
+        <div class="challenge-prompt">${this.escapeHtml(phase.question || phase.q || '')}</div>
+
+        ${phase.code ? `
+          <div class="code-terminal" style="border-color: rgba(255, 0, 85, 0.4);">
+            <div class="code-terminal-header">
+              <div class="terminal-dots">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+              </div>
+              <span style="color: var(--accent-danger);">${this.currentLevel.worldId}.boss // phase_${this.bossPhaseIndex + 1}</span>
+            </div>
+            <pre class="code-body"><code>${this.escapeHtml(phase.code)}</code></pre>
+          </div>
+        ` : ''}
+
+        <!-- Inline Boss Diagnostic Feedback -->
+        <div class="diagnostic-feedback-box" id="boss-diagnostic-box" style="display: none;"></div>
+
         <div class="options-grid" id="boss-options-grid">
-          ${phase.opts.map((opt, idx) => `
-            <button class="option-btn" data-index="${idx}">
-              <span class="option-key-badge">${idx + 1}</span>
-              <span>${this.escapeHtml(opt)}</span>
+          ${this.currentBossShuffledOptions.map((item, screenIdx) => `
+            <button class="option-btn" data-orig-index="${item.origIdx}">
+              <span class="option-key-badge">${screenIdx + 1}</span>
+              <span>${this.escapeHtml(item.text)}</span>
             </button>
           `).join('')}
         </div>
@@ -458,20 +514,21 @@ class GameEngine {
 
     container.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const choiceIdx = parseInt(btn.getAttribute('data-index'));
-        this.handleBossAnswer(choiceIdx, btn);
+        const origIdx = parseInt(btn.getAttribute('data-orig-index'));
+        this.handleBossAnswer(origIdx, btn);
       });
     });
   }
 
-  handleBossAnswer(choiceIdx, btnEl) {
+  handleBossAnswer(origIdx, btnEl) {
     if (this.isProcessing) return;
     this.isProcessing = true;
 
     const phases = this.currentLevel.phases;
     const phase = phases[this.bossPhaseIndex];
+    const correctAns = phase.correctAnswer !== undefined ? phase.correctAnswer : (phase.a !== undefined ? phase.a : 0);
 
-    if (choiceIdx === phase.a) {
+    if (origIdx === correctAns) {
       btnEl.classList.add('correct');
       this.triggerOperativeAttack();
       this.incrementCombo();
@@ -484,6 +541,14 @@ class GameEngine {
 
       if (window.Sound) window.Sound.playBossHit();
 
+      // Show phase cleared intel toast if explanation exists
+      if (phase.explanation && window.VisualFx) {
+        window.VisualFx.toast(`PHASE CLEARED: ${phase.explanation}`, '⚔️', 'success');
+      }
+
+      const bossDiag = document.getElementById('boss-diagnostic-box');
+      if (bossDiag) bossDiag.style.display = 'none';
+
       setTimeout(() => {
         this.bossPhaseIndex++;
         this.isProcessing = false;
@@ -493,29 +558,42 @@ class GameEngine {
           if (window.VisualFx) {
             window.VisualFx.toast(`🏆 ${this.currentLevel.bossData.name} ANNIHILATED!`, '🏆', 'success');
           }
-          this.finishLevel(true);
+          this.openExplanationDrawer();
         } else {
           this.renderBossPhase(document.getElementById('arena-playable-area'));
         }
       }, 700);
     } else {
       btnEl.classList.add('wrong');
+      btnEl.disabled = true;
       this.resetCombo();
       if (window.Sound) window.Sound.playError();
       if (window.VisualFx) window.VisualFx.shake();
       this.takeDamage();
+
+      const bossDiag = document.getElementById('boss-diagnostic-box');
+      if (bossDiag) {
+        bossDiag.style.display = 'flex';
+        bossDiag.innerHTML = `
+          <div class="diagnostic-icon">💥</div>
+          <div class="diagnostic-content">
+            <div class="diagnostic-title">BOSS COUNTER-SURGE DETECTED!</div>
+            <div class="diagnostic-desc">Candidate submission rejected by boss firewall. Analyze syntax &amp; re-engage!</div>
+          </div>
+        `;
+      }
+
       setTimeout(() => {
-        btnEl.classList.remove('wrong');
         this.isProcessing = false;
-      }, 600);
+      }, 400);
     }
   }
 
-  handleStandardAnswer(choiceIdx, btnEl) {
+  handleStandardAnswer(origIdx, btnEl) {
     if (this.isProcessing) return;
     this.isProcessing = true;
 
-    if (choiceIdx === this.currentLevel.correctAnswer) {
+    if (origIdx === this.currentLevel.correctAnswer) {
       btnEl.classList.add('correct');
       this.triggerOperativeAttack();
       this.incrementCombo();
@@ -526,18 +604,85 @@ class GameEngine {
 
       if (window.Sound) window.Sound.playSuccess();
       if (this.timerInterval) clearInterval(this.timerInterval);
-      setTimeout(() => this.finishLevel(true), 800);
+
+      // Hide diagnostic feedback if visible
+      const diagBox = document.getElementById('diagnostic-feedback-box');
+      if (diagBox) diagBox.style.display = 'none';
+
+      // Open Mission Intel / Explanation Drawer
+      setTimeout(() => {
+        this.openExplanationDrawer();
+      }, 700);
     } else {
       btnEl.classList.add('wrong');
+      btnEl.disabled = true;
       this.resetCombo();
       if (window.Sound) window.Sound.playError();
       if (window.VisualFx) window.VisualFx.shake();
       this.takeDamage();
+
+      // Show Inline Diagnostic Compiler Error Feedback
+      this.showDiagnosticFeedback(btnEl.textContent.trim());
+
       setTimeout(() => {
-        btnEl.classList.remove('wrong');
         this.isProcessing = false;
-      }, 600);
+      }, 400);
     }
+  }
+
+  // Inline Diagnostic Compiler Error Feedback when a mistake is made
+  showDiagnosticFeedback(wrongOptionText) {
+    const diagBox = document.getElementById('diagnostic-feedback-box');
+    if (!diagBox) return;
+
+    diagBox.style.display = 'flex';
+    diagBox.innerHTML = `
+      <div class="diagnostic-icon">⚠️</div>
+      <div class="diagnostic-content">
+        <div class="diagnostic-title">COMPILER DIAGNOSTIC // SYNTAX MISMATCH</div>
+        <div class="diagnostic-desc">
+          Candidate <code>${this.escapeHtml(wrongOptionText)}</code> rejected by runtime validation checks.
+        </div>
+        <div class="diagnostic-hint">
+          💡 <strong>INTEL CLUE:</strong> ${this.escapeHtml(this.currentLevel.hint)}
+        </div>
+      </div>
+    `;
+  }
+
+  // Mission Intel / Educational Explanation Drawer
+  openExplanationDrawer() {
+    const drawer = document.getElementById('arena-explanation-drawer');
+    if (!drawer) {
+      this.finishLevel(true);
+      return;
+    }
+
+    const titleEl = document.getElementById('drawer-level-title');
+    const explEl = document.getElementById('drawer-explanation-content');
+    const tipEl = document.getElementById('drawer-pro-tip-content');
+
+    if (titleEl) titleEl.textContent = this.currentLevel.title;
+    if (explEl) explEl.textContent = this.currentLevel.explanation || this.currentLevel.concept;
+    if (tipEl) tipEl.textContent = this.currentLevel.hint || `Mastering this mechanic unlocks deeper ${this.worldConfig ? this.worldConfig.name : ''} architectural capabilities.`;
+
+    drawer.style.display = 'flex';
+    drawer.classList.add('open');
+
+    // Bind continue & close buttons
+    const continueBtn = document.getElementById('btn-drawer-continue');
+    const closeBtn = document.getElementById('btn-drawer-close');
+    const backdrop = document.getElementById('explanation-drawer-backdrop');
+
+    const handleContinue = () => {
+      drawer.classList.remove('open');
+      drawer.style.display = 'none';
+      this.finishLevel(true);
+    };
+
+    if (continueBtn) continueBtn.onclick = handleContinue;
+    if (closeBtn) closeBtn.onclick = handleContinue;
+    if (backdrop) backdrop.onclick = handleContinue;
   }
 
   // Combat Visual FX: Operative fires laser beam at target
@@ -637,11 +782,18 @@ class GameEngine {
       window.VisualFx.toast(`HINT INTEL: ${this.currentLevel.hint}`, '💡', 'info');
     }
 
+    const isBoss = this.currentLevel.mode === 'boss';
+    const currentPhase = isBoss && this.currentLevel.phases ? this.currentLevel.phases[this.bossPhaseIndex] : null;
+    const correctAns = isBoss
+      ? (currentPhase ? (currentPhase.correctAnswer !== undefined ? currentPhase.correctAnswer : currentPhase.a) : 0)
+      : this.currentLevel.correctAnswer;
+
     const wrongButtons = Array.from(document.querySelectorAll('#mission-options-grid .option-btn, #boss-options-grid .option-btn'))
-      .filter(b => parseInt(b.getAttribute('data-index')) !== (this.currentLevel.mode === 'boss' ? this.currentLevel.phases[this.bossPhaseIndex].a : this.currentLevel.correctAnswer));
+      .filter(b => parseInt(b.getAttribute('data-orig-index')) !== correctAns && !b.disabled);
     if (wrongButtons.length > 0) {
       wrongButtons[0].style.opacity = '0.3';
       wrongButtons[0].style.pointerEvents = 'none';
+      wrongButtons[0].disabled = true;
     }
   }
 
