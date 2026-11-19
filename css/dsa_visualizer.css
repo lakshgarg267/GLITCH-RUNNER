@@ -1,0 +1,1486 @@
+
+/*
+=========================================================
+ GLITCH-RUNNER — DSA LEARNING SYSTEM
+ File: css/dsa.css
+
+ Complete DSA interface styling
+ Supports dark/light themes and responsive layouts.
+=========================================================
+*/
+
+/* =====================================================
+   1. ROOT VARIABLES
+===================================================== */
+
+:root {
+    --dsa-bg: #0b0f19;
+    --dsa-surface: #121827;
+    --dsa-surface-2: #192235;
+    --dsa-surface-3: #202c42;
+
+    --dsa-border: rgba(255, 255, 255, 0.09);
+    --dsa-border-active: rgba(0, 229, 255, 0.45);
+
+    --dsa-text: #edf2ff;
+    --dsa-text-secondary: #a8b4cb;
+    --dsa-text-muted: #73809a;
+
+    --dsa-primary: #00e5ff;
+    --dsa-primary-soft: rgba(0, 229, 255, 0.13);
+
+    --dsa-secondary: #8b5cf6;
+    --dsa-success: #22c55e;
+    --dsa-warning: #f59e0b;
+    --dsa-danger: #ef4444;
+
+    --dsa-code-bg: #0b1120;
+    --dsa-code-text: #d6deeb;
+
+    --dsa-radius-sm: 8px;
+    --dsa-radius-md: 12px;
+    --dsa-radius-lg: 18px;
+
+    --dsa-shadow:
+        0 12px 35px rgba(0, 0, 0, 0.24);
+
+    --dsa-transition: 180ms ease;
+}
+
+/* Light theme support */
+
+[data-theme="light"] {
+    --dsa-bg: #f2f5fb;
+    --dsa-surface: #ffffff;
+    --dsa-surface-2: #edf1f8;
+    --dsa-surface-3: #e1e8f3;
+
+    --dsa-border: rgba(20, 35, 60, 0.12);
+    --dsa-border-active: rgba(0, 145, 180, 0.45);
+
+    --dsa-text: #172033;
+    --dsa-text-secondary: #475569;
+    --dsa-text-muted: #718096;
+
+    --dsa-primary: #008ba3;
+    --dsa-primary-soft: rgba(0, 139, 163, 0.10);
+
+    --dsa-code-bg: #111827;
+    --dsa-code-text: #e5e7eb;
+
+    --dsa-shadow:
+        0 12px 35px rgba(30, 50, 80, 0.09);
+}
+
+/* =====================================================
+   2. GLOBAL DSA CONTAINER
+===================================================== */
+
+.dsa-container,
+#dsa-learning,
+.dsa-learning {
+    width: 100%;
+    min-height: 100%;
+    color: var(--dsa-text);
+    background: var(--dsa-bg);
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.dsa-container *,
+#dsa-learning *,
+.dsa-learning * {
+    box-sizing: border-box;
+}
+
+.dsa-container button,
+#dsa-learning button,
+.dsa-learning button {
+    font-family: inherit;
+}
+
+.dsa-hidden {
+    display: none !important;
+}
+
+.dsa-muted {
+    color: var(--dsa-text-muted);
+}
+
+.dsa-text-secondary {
+    color: var(--dsa-text-secondary);
+}
+
+/* =====================================================
+   3. HEADER
+===================================================== */
+
+.dsa-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    padding: 22px 24px;
+
+    border-bottom: 1px solid var(--dsa-border);
+    background: var(--dsa-surface);
+}
+
+.dsa-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.dsa-header-icon {
+    display: grid;
+    place-items: center;
+
+    width: 46px;
+    height: 46px;
+
+    border-radius: 13px;
+    color: var(--dsa-primary);
+    background: var(--dsa-primary-soft);
+
+    font-size: 22px;
+}
+
+.dsa-header h1 {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 800;
+    color: var(--dsa-text);
+}
+
+.dsa-header p {
+    margin: 5px 0 0;
+    color: var(--dsa-text-muted);
+    font-size: 13px;
+}
+
+.dsa-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* =====================================================
+   4. BUTTONS
+===================================================== */
+
+.dsa-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    min-height: 38px;
+    padding: 9px 15px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-radius-sm);
+
+    color: var(--dsa-text);
+    background: var(--dsa-surface-2);
+
+    font-size: 13px;
+    font-weight: 650;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition:
+        background var(--dsa-transition),
+        border-color var(--dsa-transition),
+        transform var(--dsa-transition);
+}
+
+.dsa-btn:hover:not(:disabled) {
+    border-color: var(--dsa-border-active);
+    transform: translateY(-1px);
+}
+
+.dsa-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.dsa-btn:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+}
+
+.dsa-btn-primary {
+    color: #06131a;
+    background: var(--dsa-primary);
+    border-color: var(--dsa-primary);
+}
+
+.dsa-btn-primary:hover:not(:disabled) {
+    filter: brightness(1.08);
+}
+
+.dsa-btn-success {
+    color: white;
+    background: var(--dsa-success);
+    border-color: var(--dsa-success);
+}
+
+.dsa-btn-danger {
+    color: white;
+    background: var(--dsa-danger);
+    border-color: var(--dsa-danger);
+}
+
+.dsa-btn-ghost {
+    background: transparent;
+}
+
+.dsa-btn-icon {
+    width: 38px;
+    min-width: 38px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.dsa-btn-small {
+    min-height: 31px;
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+/* =====================================================
+   5. TOPIC CATEGORIES
+===================================================== */
+
+.dsa-topic-section {
+    padding: 24px;
+}
+
+.dsa-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+.dsa-section-heading h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.dsa-section-heading p {
+    margin: 5px 0 0;
+    color: var(--dsa-text-muted);
+    font-size: 13px;
+}
+
+.dsa-topic-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.dsa-topic-card {
+    position: relative;
+    overflow: hidden;
+
+    padding: 19px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-radius-lg);
+
+    background: var(--dsa-surface);
+
+    cursor: pointer;
+
+    transition:
+        transform 200ms ease,
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+}
+
+.dsa-topic-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--dsa-border-active);
+    box-shadow: var(--dsa-shadow);
+}
+
+.dsa-topic-card.active {
+    border-color: var(--dsa-primary);
+    background: var(--dsa-primary-soft);
+}
+
+.dsa-topic-icon {
+    display: grid;
+    place-items: center;
+
+    width: 47px;
+    height: 47px;
+
+    margin-bottom: 15px;
+
+    border-radius: 13px;
+    background: var(--dsa-primary-soft);
+
+    color: var(--dsa-primary);
+    font-size: 22px;
+}
+
+.dsa-topic-card h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.dsa-topic-card p {
+    margin: 0;
+    color: var(--dsa-text-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.dsa-topic-progress {
+    height: 5px;
+    overflow: hidden;
+
+    margin-top: 17px;
+
+    border-radius: 20px;
+    background: var(--dsa-surface-3);
+}
+
+.dsa-topic-progress-bar {
+    height: 100%;
+    width: 0;
+
+    border-radius: inherit;
+    background: var(--dsa-primary);
+
+    transition: width 300ms ease;
+}
+
+/* =====================================================
+   6. ALGORITHM LIST
+===================================================== */
+
+.dsa-algorithm-section {
+    padding: 0 24px 25px;
+}
+
+.dsa-algorithm-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+}
+
+.dsa-algorithm-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 15px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-radius-md);
+
+    background: var(--dsa-surface);
+
+    cursor: pointer;
+
+    transition: var(--dsa-transition);
+}
+
+.dsa-algorithm-card:hover {
+    border-color: var(--dsa-border-active);
+    background: var(--dsa-surface-2);
+}
+
+.dsa-algorithm-card h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.dsa-algorithm-card p {
+    margin: 6px 0 0;
+    color: var(--dsa-text-muted);
+    font-size: 12px;
+}
+
+.dsa-complexity {
+    display: inline-flex;
+    align-items: center;
+
+    margin-top: 9px;
+    padding: 4px 8px;
+
+    border-radius: 6px;
+
+    color: var(--dsa-success);
+    background: rgba(34, 197, 94, 0.1);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* =====================================================
+   7. LEARNING WORKSPACE
+===================================================== */
+
+.dsa-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    width: 100%;
+    padding: 20px;
+
+    background: var(--dsa-bg);
+}
+
+.dsa-workspace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding: 15px 18px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-radius-md);
+
+    background: var(--dsa-surface);
+}
+
+.dsa-workspace-title h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.dsa-workspace-title p {
+    margin: 5px 0 0;
+    color: var(--dsa-text-muted);
+    font-size: 12px;
+}
+
+.dsa-workspace-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* =====================================================
+   8. SPLIT SCREEN
+===================================================== */
+
+.dsa-split-screen {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr) minmax(0, 1fr);
+
+    gap: 14px;
+    width: 100%;
+    min-height: 480px;
+}
+
+.dsa-panel {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    overflow: hidden;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-radius-lg);
+
+    background: var(--dsa-surface);
+    box-shadow: var(--dsa-shadow);
+}
+
+.dsa-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    min-height: 52px;
+    padding: 12px 15px;
+
+    border-bottom: 1px solid var(--dsa-border);
+}
+
+.dsa-panel-header h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.dsa-panel-header small {
+    color: var(--dsa-text-muted);
+    font-size: 11px;
+}
+
+/* =====================================================
+   9. CODE EDITOR
+===================================================== */
+
+.dsa-code-panel {
+    background: var(--dsa-code-bg);
+}
+
+.dsa-code-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 11px 14px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    background: #111827;
+}
+
+.dsa-language-select {
+    min-width: 125px;
+    padding: 8px 11px;
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 7px;
+
+    outline: none;
+
+    color: #e5e7eb;
+    background: #1f2937;
+
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dsa-language-select:focus {
+    border-color: var(--dsa-primary);
+}
+
+.dsa-code-actions {
+    display: flex;
+    gap: 7px;
+}
+
+.dsa-code-content {
+    flex: 1;
+
+    overflow: auto;
+    min-height: 350px;
+    max-height: 620px;
+
+    padding: 14px 0;
+
+    color: var(--dsa-code-text);
+    background: var(--dsa-code-bg);
+
+    font-family:
+        "Fira Code",
+        "Cascadia Code",
+        Consolas,
+        monospace;
+
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.dsa-code-line {
+    display: flex;
+    align-items: flex-start;
+
+    min-height: 25px;
+    padding: 1px 15px;
+
+    white-space: pre;
+    transition: background 150ms ease;
+}
+
+.dsa-line-number {
+    flex: 0 0 42px;
+
+    padding-right: 14px;
+
+    color: #64748b;
+    text-align: right;
+
+    user-select: none;
+}
+
+.dsa-line-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.dsa-code-line.active,
+.dsa-code-line.highlighted {
+    background: rgba(0, 229, 255, 0.14);
+    border-left: 3px solid var(--dsa-primary);
+}
+
+.dsa-code-line.active .dsa-line-number,
+.dsa-code-line.highlighted .dsa-line-number {
+    color: var(--dsa-primary);
+}
+
+.dsa-code-line.executed {
+    background: rgba(34, 197, 94, 0.07);
+}
+
+.dsa-code-empty {
+    padding: 30px;
+    color: #94a3b8;
+    text-align: center;
+}
+
+/* =====================================================
+   10. CODE SYNTAX COLORS
+===================================================== */
+
+.dsa-keyword {
+    color: #c792ea;
+}
+
+.dsa-function {
+    color: #82aaff;
+}
+
+.dsa-string {
+    color: #c3e88d;
+}
+
+.dsa-number {
+    color: #f78c6c;
+}
+
+.dsa-comment {
+    color: #697098;
+    font-style: italic;
+}
+
+.dsa-operator {
+    color: #89ddff;
+}
+
+.dsa-variable {
+    color: #f07178;
+}
+
+/* =====================================================
+   11. VISUALIZER CANVAS
+===================================================== */
+
+.dsa-visualizer-panel {
+    position: relative;
+    min-height: 430px;
+}
+
+.dsa-canvas-wrapper {
+    position: relative;
+    flex: 1;
+
+    min-height: 350px;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0, 229, 255, 0.045),
+            transparent 65%
+        ),
+        var(--dsa-surface);
+}
+
+.dsa-canvas-wrapper canvas,
+.dsa-canvas {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+    min-height: 350px;
+}
+
+.dsa-canvas-overlay {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 10px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: 7px;
+
+    color: var(--dsa-text-secondary);
+    background: var(--dsa-surface);
+
+    font-size: 11px;
+}
+
+.dsa-canvas-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 11px 14px;
+
+    border-top: 1px solid var(--dsa-border);
+
+    color: var(--dsa-text-secondary);
+    background: var(--dsa-surface);
+
+    font-size: 12px;
+}
+
+.dsa-status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: var(--dsa-warning);
+}
+
+.dsa-status-dot.running {
+    background: var(--dsa-success);
+    box-shadow: 0 0 9px var(--dsa-success);
+}
+
+.dsa-status-dot.completed {
+    background: var(--dsa-primary);
+}
+
+/* =====================================================
+   12. PLAYBACK CONTROLS
+===================================================== */
+
+.dsa-playback {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    padding: 15px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-md, 12px);
+
+    background: var(--dsa-surface);
+}
+
+.dsa-playback-buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.dsa-playback-progress {
+    flex: 1;
+    min-width: 140px;
+
+    height: 6px;
+    overflow: hidden;
+
+    border-radius: 20px;
+    background: var(--dsa-surface-3);
+}
+
+.dsa-playback-progress-bar {
+    width: 0;
+    height: 100%;
+
+    border-radius: inherit;
+    background: var(--dsa-primary);
+
+    transition: width 180ms linear;
+}
+
+.dsa-step-counter {
+    color: var(--dsa-text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.dsa-speed-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--dsa-text-secondary);
+    font-size: 12px;
+}
+
+.dsa-speed-control select {
+    padding: 7px 9px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: 7px;
+
+    outline: none;
+
+    color: var(--dsa-text);
+    background: var(--dsa-surface-2);
+
+    font-size: 12px;
+}
+
+/* =====================================================
+   13. STEP INFORMATION
+===================================================== */
+
+.dsa-step-information {
+    padding: 16px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-md, 12px);
+
+    background: var(--dsa-surface);
+}
+
+.dsa-step-information h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+}
+
+.dsa-step-information p {
+    margin: 0;
+    color: var(--dsa-text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.dsa-step-badge {
+    display: inline-flex;
+    align-items: center;
+
+    margin-bottom: 10px;
+    padding: 5px 9px;
+
+    border-radius: 6px;
+
+    color: var(--dsa-primary);
+    background: var(--dsa-primary-soft);
+
+    font-size: 11px;
+    font-weight: 750;
+}
+
+/* =====================================================
+   14. VARIABLES PANEL
+===================================================== */
+
+.dsa-variables-panel {
+    padding: 15px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-md, 12px);
+
+    background: var(--dsa-surface);
+}
+
+.dsa-variables-panel h3 {
+    margin: 0 0 13px;
+    font-size: 14px;
+}
+
+.dsa-variable-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(125px, 1fr));
+
+    gap: 10px;
+}
+
+.dsa-variable-card {
+    min-width: 0;
+    padding: 11px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: 9px;
+
+    background: var(--dsa-surface-2);
+}
+
+.dsa-variable-card span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--dsa-text-muted);
+    font-size: 11px;
+}
+
+.dsa-variable-card strong {
+    display: block;
+
+    overflow-wrap: anywhere;
+
+    color: var(--dsa-primary);
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+
+/* =====================================================
+   15. COMPLEXITY PANEL
+===================================================== */
+
+.dsa-complexity-panel {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(145px, 1fr));
+
+    gap: 10px;
+}
+
+.dsa-complexity-card {
+    padding: 14px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: 10px;
+
+    background: var(--dsa-surface);
+}
+
+.dsa-complexity-card span {
+    display: block;
+    margin-bottom: 7px;
+
+    color: var(--dsa-text-muted);
+    font-size: 11px;
+}
+
+.dsa-complexity-card strong {
+    color: var(--dsa-success);
+    font-size: 16px;
+    font-family: Consolas, monospace;
+}
+
+/* =====================================================
+   16. INPUT PANEL
+===================================================== */
+
+.dsa-input-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 15px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-md, 12px);
+
+    background: var(--dsa-surface);
+}
+
+.dsa-input-panel label {
+    color: var(--dsa-text-secondary);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.dsa-input,
+.dsa-select,
+.dsa-textarea {
+    width: 100%;
+    min-height: 39px;
+
+    padding: 9px 12px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: 8px;
+
+    outline: none;
+
+    color: var(--dsa-text);
+    background: var(--dsa-surface-2);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    transition: border-color var(--dsa-transition);
+}
+
+.dsa-input:focus,
+.dsa-select:focus,
+.dsa-textarea:focus {
+    border-color: var(--dsa-primary);
+}
+
+.dsa-textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+/* =====================================================
+   17. TREE AND GRAPH VISUALIZATION LABELS
+===================================================== */
+
+.dsa-node-label {
+    fill: var(--dsa-text);
+    font-size: 12px;
+    font-weight: 750;
+    text-anchor: middle;
+}
+
+.dsa-edge-label {
+    fill: var(--dsa-text-secondary);
+    font-size: 11px;
+    text-anchor: middle;
+}
+
+.dsa-pointer-label {
+    fill: var(--dsa-primary);
+    font-size: 11px;
+    font-weight: 750;
+}
+
+/* =====================================================
+   18. LEGEND
+===================================================== */
+
+.dsa-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+
+    padding: 12px 15px;
+
+    border-top: 1px solid var(--dsa-border);
+    background: var(--dsa-surface);
+}
+
+.dsa-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--dsa-text-secondary);
+    font-size: 11px;
+}
+
+.dsa-legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+}
+
+.dsa-legend-color.default {
+    background: #64748b;
+}
+
+.dsa-legend-color.active {
+    background: var(--dsa-primary);
+}
+
+.dsa-legend-color.visited {
+    background: var(--dsa-success);
+}
+
+.dsa-legend-color.completed {
+    background: var(--dsa-secondary);
+}
+
+/* =====================================================
+   19. LEARNING PROGRESS
+===================================================== */
+
+.dsa-progress-section {
+    padding: 18px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-lg, 18px);
+
+    background: var(--dsa-surface);
+}
+
+.dsa-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 12px;
+}
+
+.dsa-progress-header h3 {
+    margin: 0;
+    font-size: 14px;
+}
+
+.dsa-progress-header span {
+    color: var(--dsa-primary);
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.dsa-progress-track {
+    height: 8px;
+    overflow: hidden;
+
+    border-radius: 20px;
+    background: var(--dsa-surface-3);
+}
+
+.dsa-progress-fill {
+    height: 100%;
+    width: 0;
+
+    border-radius: inherit;
+    background: linear-gradient(
+        90deg,
+        var(--dsa-primary),
+        var(--dsa-secondary)
+    );
+
+    transition: width 350ms ease;
+}
+
+/* =====================================================
+   20. EMPTY STATES
+===================================================== */
+
+.dsa-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 230px;
+    padding: 25px;
+
+    text-align: center;
+}
+
+.dsa-empty-state-icon {
+    margin-bottom: 14px;
+    color: var(--dsa-text-muted);
+    font-size: 40px;
+}
+
+.dsa-empty-state h3 {
+    margin: 0 0 7px;
+    font-size: 16px;
+}
+
+.dsa-empty-state p {
+    max-width: 370px;
+    margin: 0;
+
+    color: var(--dsa-text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* =====================================================
+   21. TOOLTIPS
+===================================================== */
+
+.dsa-tooltip {
+    position: relative;
+}
+
+.dsa-tooltip::after {
+    content: attr(data-tooltip);
+
+    position: absolute;
+    z-index: 50;
+
+    bottom: calc(100% + 8px);
+    left: 50%;
+
+    padding: 6px 9px;
+
+    border-radius: 6px;
+
+    color: white;
+    background: #111827;
+
+    font-size: 11px;
+    white-space: nowrap;
+
+    opacity: 0;
+    pointer-events: none;
+
+    transform: translate(-50%, 4px);
+    transition: 150ms ease;
+}
+
+.dsa-tooltip:hover::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* =====================================================
+   22. MODAL
+===================================================== */
+
+.dsa-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(5px);
+}
+
+.dsa-modal {
+    width: min(100%, 500px);
+    max-height: 85vh;
+    overflow: auto;
+
+    padding: 22px;
+
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-radius-lg);
+
+    background: var(--dsa-surface);
+    box-shadow: var(--dsa-shadow);
+}
+
+.dsa-modal h2 {
+    margin: 0 0 12px;
+    font-size: 19px;
+}
+
+.dsa-modal p {
+    color: var(--dsa-text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* =====================================================
+   23. ANIMATIONS
+===================================================== */
+
+@keyframes dsa-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dsa-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.55;
+    }
+}
+
+@keyframes dsa-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(0, 229, 255, 0.12);
+    }
+
+    50% {
+        box-shadow: 0 0 16px rgba(0, 229, 255, 0.32);
+    }
+}
+
+.dsa-animate-in {
+    animation: dsa-fade-in 250ms ease both;
+}
+
+.dsa-pulse {
+    animation: dsa-pulse 1.4s infinite;
+}
+
+.dsa-active-glow {
+    animation: dsa-glow 1.6s infinite;
+}
+
+/* =====================================================
+   24. SCROLLBARS
+===================================================== */
+
+.dsa-workspace ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.dsa-workspace ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dsa-workspace ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #475569;
+}
+
+.dsa-workspace ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* =====================================================
+   25. RESPONSIVE TABLET
+===================================================== */
+
+@media (max-width: 1000px) {
+
+    .dsa-split-screen {
+        grid-template-columns: 1fr;
+    }
+
+    .dsa-code-content {
+        max-height: 420px;
+    }
+
+    .dsa-visualizer-panel {
+        min-height: 390px;
+    }
+
+}
+
+/* =====================================================
+   26. RESPONSIVE MOBILE
+===================================================== */
+
+@media (max-width: 650px) {
+
+    .dsa-header {
+        align-items: flex-start;
+        padding: 16px;
+    }
+
+    .dsa-header h1 {
+        font-size: 19px;
+    }
+
+    .dsa-topic-section {
+        padding: 16px;
+    }
+
+    .dsa-topic-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dsa-algorithm-section {
+        padding: 0 16px 18px;
+    }
+
+    .dsa-algorithm-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dsa-workspace {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .dsa-workspace-header {
+        align-items: flex-start;
+        padding: 12px;
+    }
+
+    .dsa-split-screen {
+        gap: 10px;
+    }
+
+    .dsa-panel {
+        border-radius: 11px;
+    }
+
+    .dsa-code-content {
+        min-height: 270px;
+        max-height: 380px;
+        font-size: 11px;
+    }
+
+    .dsa-canvas-wrapper {
+        min-height: 290px;
+    }
+
+    .dsa-canvas-wrapper canvas,
+    .dsa-canvas {
+        min-height: 290px;
+    }
+
+    .dsa-playback {
+        align-items: stretch;
+    }
+
+    .dsa-playback-buttons {
+        width: 100%;
+    }
+
+    .dsa-playback-buttons .dsa-btn {
+        flex: 1;
+    }
+
+    .dsa-playback-progress {
+        flex-basis: 100%;
+    }
+
+    .dsa-speed-control {
+        justify-content: space-between;
+    }
+
+    .dsa-variable-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+/* =====================================================
+   27. ACCESSIBILITY
+===================================================== */
+
+.dsa-container button:focus-visible,
+.dsa-learning button:focus-visible,
+.dsa-container input:focus-visible,
+.dsa-container select:focus-visible,
+.dsa-learning input:focus-visible,
+.dsa-learning select:focus-visible {
+    outline: 2px solid var(--dsa-primary);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .dsa-container *,
+    .dsa-learning *,
+    #dsa-learning * {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+}
+
+/* =====================================================
+   END OF DSA LEARNING SYSTEM STYLES
+===================================================== */
