@@ -22,9 +22,12 @@
  * - Responsive canvas
  */
 
-import AnimationUtils from "./animationUtils.js";
+const DSAAnimationUtils =
+    typeof window !== "undefined" && window.AnimationUtils
+        ? window.AnimationUtils
+        : null;
 
-export class CanvasRenderer {
+class CanvasRenderer {
 
     constructor(canvas, options = {}) {
 
@@ -311,6 +314,7 @@ export class CanvasRenderer {
             "tree",
             "graph",
             "recursion",
+            "hanoi",
             "maze",
             "string"
         ];
@@ -427,7 +431,7 @@ export class CanvasRenderer {
 
         this.lastFrameTime = 0;
 
-        this._animate();
+        this._animate(performance.now());
 
     }
 
@@ -542,6 +546,10 @@ export class CanvasRenderer {
 
             case "recursion":
                 this._drawRecursion(time);
+                break;
+
+            case "hanoi":
+                this._drawHanoi();
                 break;
 
             case "maze":
@@ -713,7 +721,7 @@ export class CanvasRenderer {
                 state === "pivot" ||
                 state === "found"
             )
-                ? AnimationUtils.pulse(time / 1000, {
+                ? DSAAnimationUtils.pulse(time / 1000, {
                     frequency: 1.5,
                     minimum: 0.92,
                     maximum: 1.08
@@ -1944,6 +1952,54 @@ export class CanvasRenderer {
     // RECURSION CALL STACK
     // ==========================================
 
+    _drawHanoi() {
+        const elements = this.data.elements;
+        const rods = ["A", "B", "C"];
+        const xPositions = rods.map((_, index) =>
+            this.width * (index + 1) / (rods.length + 1)
+        );
+        const baseY = this.height * 0.84;
+        const rodTop = this.height * 0.22;
+        const maxSize = Math.max(1, ...elements.map(item => Number(item.value) || 1));
+        const diskHeight = Math.max(12, Math.min(22, this.height * 0.055));
+        const maxWidth = Math.min(this.width * 0.25, 150);
+
+        xPositions.forEach((x, index) => {
+            this.ctx.strokeStyle = this.theme.muted;
+            this.ctx.lineWidth = 5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, rodTop);
+            this.ctx.lineTo(x, baseY);
+            this.ctx.stroke();
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.moveTo(x - maxWidth * 0.55, baseY);
+            this.ctx.lineTo(x + maxWidth * 0.55, baseY);
+            this.ctx.stroke();
+            this._drawText(rods[index], x, baseY + 22, {
+                color: this.theme.text,
+                size: 13,
+                weight: "bold"
+            });
+        });
+
+        elements.forEach(item => {
+            const rodIndex = rods.indexOf(String(item.rod));
+            if (rodIndex < 0) return;
+            const width = Math.max(26, (Number(item.value) / maxSize) * maxWidth);
+            const x = xPositions[rodIndex] - width / 2;
+            const y = baseY - (Number(item.index) + 1) * diskHeight;
+            this.ctx.fillStyle = this._getStateColor(this._getElementState(item));
+            this._roundedRect(x, y, width, diskHeight - 2, 5);
+            this.ctx.fill();
+            this._drawText(String(item.value), xPositions[rodIndex], y + diskHeight / 2, {
+                color: this.theme.text,
+                size: 11,
+                weight: "bold"
+            });
+        });
+    }
+
     _drawRecursion() {
 
         const frames = this.data.frames;
@@ -2413,5 +2469,9 @@ export class CanvasRenderer {
 }
 
 
-// Default export.
-export default CanvasRenderer;
+if (typeof window !== "undefined") {
+    window.CanvasRenderer = CanvasRenderer;
+}
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = CanvasRenderer;
+}

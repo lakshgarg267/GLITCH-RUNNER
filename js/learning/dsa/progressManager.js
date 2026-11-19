@@ -431,6 +431,9 @@
             }
 
             this.data.completedTopics.push(topicId);
+            if (!this.data.completedAlgorithms.includes(topicId)) {
+                this.data.completedAlgorithms.push(topicId);
+            }
 
             this.data.topicProgress[topicId] = {
                 percentage: 100,

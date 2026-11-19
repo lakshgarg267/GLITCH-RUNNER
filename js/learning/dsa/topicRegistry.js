@@ -33,6 +33,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "array-traversal",
+                algorithmId: "array-traversal",
                 title: "Array Traversal",
                 description: "Visit every element of an array.",
                 difficulty: "Beginner",
@@ -42,6 +43,7 @@ const CATEGORIES = [
             },
             {
                 id: "linear-search",
+                algorithmId: "linear-search",
                 title: "Linear Search",
                 description: "Find an element by checking elements one by one.",
                 difficulty: "Beginner",
@@ -51,6 +53,7 @@ const CATEGORIES = [
             },
             {
                 id: "binary-search",
+                algorithmId: "binary-search",
                 title: "Binary Search",
                 description: "Find an element in a sorted array by dividing the search range.",
                 difficulty: "Intermediate",
@@ -58,42 +61,10 @@ const CATEGORIES = [
                 complexity: "O(log n)",
                 concepts: ["Low", "High", "Mid", "Divide and Conquer"]
             },
-            {
-                id: "prefix-sum",
-                title: "Prefix Sum",
-                description: "Calculate cumulative sums to answer range queries efficiently.",
-                difficulty: "Intermediate",
-                visualizer: "prefix-sum",
-                complexity: "O(n) preprocessing",
-                concepts: ["Cumulative Sum", "Range Query"]
-            },
-            {
-                id: "two-pointers",
-                title: "Two Pointers",
-                description: "Solve array problems using two moving pointers.",
-                difficulty: "Intermediate",
-                visualizer: "two-pointers",
-                complexity: "O(n)",
-                concepts: ["Left", "Right", "Pointers"]
-            },
-            {
-                id: "sliding-window",
-                title: "Sliding Window",
-                description: "Process continuous subarrays using a moving window.",
-                difficulty: "Intermediate",
-                visualizer: "sliding-window",
-                complexity: "O(n)",
-                concepts: ["Window", "Left", "Right"]
-            },
-            {
-                id: "kadane",
-                title: "Kadane's Algorithm",
-                description: "Find the maximum sum of a contiguous subarray.",
-                difficulty: "Intermediate",
-                visualizer: "kadane",
-                complexity: "O(n)",
-                concepts: ["Current Sum", "Maximum Sum"]
-            }
+            { id: "array-insertion", algorithmId: "array-insertion", title: "Insert", description: "Insert a value at a valid index.", difficulty: "Beginner", visualizer: "array", complexity: "O(n)", concepts: ["Index", "Shift", "Insertion"] },
+            { id: "array-deletion", algorithmId: "array-deletion", title: "Delete", description: "Delete a value at a valid index.", difficulty: "Beginner", visualizer: "array", complexity: "O(n)", concepts: ["Index", "Shift", "Deletion"] },
+            { id: "array-reverse", algorithmId: "array-reverse", title: "Reverse", description: "Reverse array elements using two pointers.", difficulty: "Beginner", visualizer: "array", complexity: "O(n)", concepts: ["Left", "Right", "Swap"] },
+            { id: "array-min-max", algorithmId: "array-min-max", title: "Find Maximum and Minimum", description: "Find the smallest and largest values.", difficulty: "Beginner", visualizer: "array", complexity: "O(n)", concepts: ["Minimum", "Maximum", "Iteration"] }
         ]
     },
 
@@ -106,6 +77,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "reverse-string",
+                algorithmId: "string-reverse",
                 title: "Reverse String",
                 description: "Reverse characters using two pointers.",
                 difficulty: "Beginner",
@@ -115,6 +87,7 @@ const CATEGORIES = [
             },
             {
                 id: "palindrome",
+                algorithmId: "palindrome",
                 title: "Palindrome Check",
                 description: "Check whether a string reads the same forward and backward.",
                 difficulty: "Beginner",
@@ -124,6 +97,7 @@ const CATEGORIES = [
             },
             {
                 id: "anagram",
+                algorithmId: "anagram",
                 title: "Anagram Detection",
                 description: "Determine whether two strings contain the same characters.",
                 difficulty: "Intermediate",
@@ -131,15 +105,8 @@ const CATEGORIES = [
                 complexity: "O(n)",
                 concepts: ["Frequency", "Character Mapping"]
             },
-            {
-                id: "substring-pattern",
-                title: "Substring & Pattern Matching",
-                description: "Find a pattern inside a larger string.",
-                difficulty: "Intermediate",
-                visualizer: "pattern-matching",
-                complexity: "O(n × m) naive",
-                concepts: ["Substring", "Pattern", "Matching"]
-            }
+            { id: "string-traversal", algorithmId: "string-traversal", title: "String Traversal", description: "Visit every character of a string.", difficulty: "Beginner", visualizer: "string", complexity: "O(n)", concepts: ["Character", "Index", "Iteration"] },
+            { id: "character-frequency", algorithmId: "character-frequency", title: "Character Frequency", description: "Count occurrences of every character.", difficulty: "Beginner", visualizer: "string", complexity: "O(n)", concepts: ["Frequency", "Character", "Mapping"] }
         ]
     },
 
@@ -152,6 +119,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "bubble-sort",
+                algorithmId: "bubble-sort",
                 title: "Bubble Sort",
                 description: "Sort elements through repeated adjacent comparisons.",
                 difficulty: "Beginner",
@@ -161,6 +129,7 @@ const CATEGORIES = [
             },
             {
                 id: "selection-sort",
+                algorithmId: "selection-sort",
                 title: "Selection Sort",
                 description: "Select the smallest remaining element in every pass.",
                 difficulty: "Beginner",
@@ -170,6 +139,7 @@ const CATEGORIES = [
             },
             {
                 id: "insertion-sort",
+                algorithmId: "insertion-sort",
                 title: "Insertion Sort",
                 description: "Insert each element into its correct sorted position.",
                 difficulty: "Beginner",
@@ -179,6 +149,7 @@ const CATEGORIES = [
             },
             {
                 id: "merge-sort",
+                algorithmId: "merge-sort",
                 title: "Merge Sort",
                 description: "Divide an array and merge sorted subarrays.",
                 difficulty: "Advanced",
@@ -188,6 +159,7 @@ const CATEGORIES = [
             },
             {
                 id: "quick-sort",
+                algorithmId: "quick-sort",
                 title: "Quick Sort",
                 description: "Partition elements around a pivot and sort recursively.",
                 difficulty: "Advanced",
@@ -195,24 +167,6 @@ const CATEGORIES = [
                 complexity: "O(n log n) average",
                 concepts: ["Pivot", "Partition", "Recursion"]
             },
-            {
-                id: "heap-sort",
-                title: "Heap Sort",
-                description: "Sort elements using a binary heap.",
-                difficulty: "Advanced",
-                visualizer: "heap-sort",
-                complexity: "O(n log n)",
-                concepts: ["Heap", "Root", "Heapify"]
-            },
-            {
-                id: "counting-sort",
-                title: "Counting Sort",
-                description: "Sort integer values using frequency counts.",
-                difficulty: "Intermediate",
-                visualizer: "counting-sort",
-                complexity: "O(n + k)",
-                concepts: ["Frequency", "Counting", "Reconstruction"]
-            }
         ]
     },
 
@@ -225,6 +179,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "factorial",
+                algorithmId: "factorial",
                 title: "Factorial",
                 description: "Understand recursive function calls and returns.",
                 difficulty: "Beginner",
@@ -234,6 +189,7 @@ const CATEGORIES = [
             },
             {
                 id: "fibonacci",
+                algorithmId: "fibonacci",
                 title: "Fibonacci Sequence",
                 description: "Visualize recursive Fibonacci calls as a tree.",
                 difficulty: "Intermediate",
@@ -243,6 +199,7 @@ const CATEGORIES = [
             },
             {
                 id: "subsets",
+                algorithmId: "subsets",
                 title: "Subsets",
                 description: "Generate all possible subsets using backtracking.",
                 difficulty: "Advanced",
@@ -250,24 +207,7 @@ const CATEGORIES = [
                 complexity: "O(n × 2ⁿ)",
                 concepts: ["Include", "Exclude", "Backtracking"]
             },
-            {
-                id: "n-queens",
-                title: "N-Queens",
-                description: "Place queens without attacking each other.",
-                difficulty: "Advanced",
-                visualizer: "chess-backtracking",
-                complexity: "Exponential",
-                concepts: ["Chessboard", "Safe Position", "Backtracking"]
-            },
-            {
-                id: "maze",
-                title: "Maze Solver",
-                description: "Find a valid path through a maze.",
-                difficulty: "Advanced",
-                visualizer: "maze",
-                complexity: "O(4^(n×m)) worst case",
-                concepts: ["Path", "Visited", "Backtracking"]
-            }
+            { id: "tower-of-hanoi", algorithmId: "tower-of-hanoi", title: "Tower of Hanoi", description: "Move disks using recursive calls.", difficulty: "Intermediate", visualizer: "tower-of-hanoi", complexity: "O(2^n)", concepts: ["Recursion", "Rods", "Disks"] }
         ]
     },
 
@@ -280,6 +220,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "linked-list-traversal",
+                algorithmId: "linked-list-traversal",
                 title: "Linked List Traversal",
                 description: "Move through linked nodes using next pointers.",
                 difficulty: "Beginner",
@@ -289,6 +230,7 @@ const CATEGORIES = [
             },
             {
                 id: "linked-list-insert",
+                algorithmId: "linked-list-insert-position",
                 title: "Insertion",
                 description: "Insert new nodes at different positions.",
                 difficulty: "Intermediate",
@@ -298,6 +240,7 @@ const CATEGORIES = [
             },
             {
                 id: "linked-list-delete",
+                algorithmId: "linked-list-delete-position",
                 title: "Deletion",
                 description: "Remove nodes and reconnect their neighbors.",
                 difficulty: "Intermediate",
@@ -307,6 +250,7 @@ const CATEGORIES = [
             },
             {
                 id: "linked-list-reverse",
+                algorithmId: "linked-list-reverse",
                 title: "Reverse Linked List",
                 description: "Reverse node connections using three pointers.",
                 difficulty: "Intermediate",
@@ -326,6 +270,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "stack",
+                algorithmId: "stack-push",
                 title: "Stack Operations",
                 description: "Understand Push, Pop and Peek operations.",
                 difficulty: "Beginner",
@@ -335,6 +280,7 @@ const CATEGORIES = [
             },
             {
                 id: "queue",
+                algorithmId: "queue-enqueue",
                 title: "Queue Operations",
                 description: "Understand Enqueue and Dequeue operations.",
                 difficulty: "Beginner",
@@ -344,13 +290,18 @@ const CATEGORIES = [
             },
             {
                 id: "circular-queue",
+                algorithmId: "circular-queue",
                 title: "Circular Queue",
                 description: "Reuse available queue positions through circular indexing.",
                 difficulty: "Intermediate",
                 visualizer: "circular-queue",
                 complexity: "O(1)",
                 concepts: ["Front", "Rear", "Modulo"]
-            }
+            },
+            { id: "stack-pop", algorithmId: "stack-pop", title: "Stack Pop", description: "Remove the top element from a stack.", difficulty: "Beginner", visualizer: "stack", complexity: "O(1)", concepts: ["LIFO", "Top", "Pop"] },
+            { id: "stack-peek", algorithmId: "stack-peek", title: "Stack Peek", description: "Read the top element without removing it.", difficulty: "Beginner", visualizer: "stack", complexity: "O(1)", concepts: ["LIFO", "Top", "Peek"] },
+            { id: "queue-dequeue", algorithmId: "queue-dequeue", title: "Queue Dequeue", description: "Remove the front element from a queue.", difficulty: "Beginner", visualizer: "queue", complexity: "O(1)", concepts: ["FIFO", "Front", "Dequeue"] },
+            { id: "balanced-parentheses", algorithmId: "balanced-parentheses", title: "Balanced Parentheses", description: "Check bracket matching with a stack.", difficulty: "Beginner", visualizer: "stack", complexity: "O(n)", concepts: ["Stack", "Brackets", "Matching"] }
         ]
     },
 
@@ -363,6 +314,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "inorder",
+                algorithmId: "tree-inorder",
                 title: "Inorder Traversal",
                 description: "Visit Left, Root and Right nodes.",
                 difficulty: "Intermediate",
@@ -372,6 +324,7 @@ const CATEGORIES = [
             },
             {
                 id: "preorder",
+                algorithmId: "tree-preorder",
                 title: "Preorder Traversal",
                 description: "Visit Root, Left and Right nodes.",
                 difficulty: "Intermediate",
@@ -381,6 +334,7 @@ const CATEGORIES = [
             },
             {
                 id: "postorder",
+                algorithmId: "tree-postorder",
                 title: "Postorder Traversal",
                 description: "Visit Left, Right and Root nodes.",
                 difficulty: "Intermediate",
@@ -390,6 +344,7 @@ const CATEGORIES = [
             },
             {
                 id: "bst-insert",
+                algorithmId: "bst-insert",
                 title: "BST Insertion",
                 description: "Insert values while maintaining BST ordering.",
                 difficulty: "Intermediate",
@@ -399,13 +354,16 @@ const CATEGORIES = [
             },
             {
                 id: "bst-search",
+                algorithmId: "bst-search",
                 title: "BST Search",
                 description: "Find a target value using BST properties.",
                 difficulty: "Intermediate",
                 visualizer: "bst",
                 complexity: "O(log n) average",
                 concepts: ["Target", "Comparison", "Traversal"]
-            }
+            },
+            { id: "bst-delete", algorithmId: "bst-delete", title: "BST Deletion", description: "Delete a node from a binary search tree.", difficulty: "Intermediate", visualizer: "bst", complexity: "O(log n) average", concepts: ["Deletion", "Successor", "BST"] },
+            { id: "tree-level-order", algorithmId: "tree-level-order", title: "Level Order Traversal", description: "Visit tree nodes level by level.", difficulty: "Intermediate", visualizer: "tree-traversal", complexity: "O(n)", concepts: ["Queue", "Level", "Traversal"] }
         ]
     },
 
@@ -418,6 +376,7 @@ const CATEGORIES = [
         topics: [
             {
                 id: "bfs",
+                algorithmId: "graph-bfs",
                 title: "Breadth First Search",
                 description: "Explore graph nodes level by level using a queue.",
                 difficulty: "Advanced",
@@ -427,13 +386,18 @@ const CATEGORIES = [
             },
             {
                 id: "dfs",
+                algorithmId: "graph-dfs",
                 title: "Depth First Search",
                 description: "Explore graph paths deeply using recursion or a stack.",
                 difficulty: "Advanced",
                 visualizer: "graph-dfs",
                 complexity: "O(V + E)",
                 concepts: ["Stack", "Visited", "Backtracking"]
-            }
+            },
+            { id: "dijkstra", algorithmId: "graph-dijkstra", title: "Dijkstra", description: "Find shortest paths in a weighted graph.", difficulty: "Advanced", visualizer: "graph-dijkstra", complexity: "O(V^2 + E)", concepts: ["Distance", "Priority", "Relaxation"] },
+            { id: "graph-cycle-detection", algorithmId: "graph-undirected-cycle", title: "Cycle Detection", description: "Detect a cycle in an undirected graph.", difficulty: "Advanced", visualizer: "graph", complexity: "O(V + E)", concepts: ["DFS", "Visited", "Cycle"] },
+            { id: "topological-sort", algorithmId: "graph-topological-sort", title: "Topological Sort", description: "Order a directed acyclic graph.", difficulty: "Advanced", visualizer: "graph", complexity: "O(V + E)", concepts: ["Indegree", "Queue", "DAG"] },
+            { id: "connected-components", algorithmId: "graph-connected-components", title: "Connected Components", description: "Find disconnected groups of vertices.", difficulty: "Advanced", visualizer: "graph", complexity: "O(V + E)", concepts: ["DFS", "Component", "Visited"] }
         ]
     }
 ];
@@ -534,6 +498,10 @@ const TopicRegistry = {
 
 freeze(CATEGORIES);
 
-export { CATEGORIES, TopicRegistry };
-
-export default TopicRegistry;
+if (typeof window !== "undefined") {
+    window.CATEGORIES = CATEGORIES;
+    window.TopicRegistry = TopicRegistry;
+}
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = { CATEGORIES, TopicRegistry };
+}

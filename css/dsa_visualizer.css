@@ -1484,3 +1484,138 @@
 /* =====================================================
    END OF DSA LEARNING SYSTEM STYLES
 ===================================================== */
+
+/* Integrated CODE-ARENAA workspace */
+#view-learning .dsa-workspace-grid {
+    display: grid;
+    grid-template-columns: minmax(300px, .9fr) minmax(360px, 1.1fr);
+    gap: 16px;
+}
+
+#view-learning .dsa-panel {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--dsa-border);
+    border-radius: var(--dsa-radius-md);
+    background: var(--dsa-surface);
+    color: var(--dsa-text);
+}
+
+#view-learning .dsa-panel-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+#view-learning .dsa-status {
+    color: var(--dsa-primary);
+    font-size: .8rem;
+}
+
+#view-learning .dsa-explanation,
+#view-learning .dsa-variable-panel p {
+    color: var(--dsa-text-secondary);
+    margin: 8px 0 12px;
+}
+
+#view-learning .dsa-code-wrap {
+    max-height: 310px;
+    overflow: auto;
+    border: 1px solid var(--dsa-border);
+    border-radius: 8px;
+    background: var(--dsa-code-bg);
+}
+
+#view-learning .dsa-code {
+    min-height: 180px;
+    margin: 0;
+    padding: 14px;
+    color: var(--dsa-code-text);
+    font: 12px/1.7 var(--font-code, Consolas, monospace);
+    white-space: pre;
+    user-select: text;
+}
+
+#view-learning .dsa-code-line { display: inline; }
+#view-learning .dsa-code-line.active {
+    display: inline-block;
+    width: 100%;
+    color: #fff;
+    background: rgba(0, 229, 255, .18);
+    box-shadow: inset 3px 0 var(--dsa-primary);
+}
+
+#view-learning .dsa-variable-panel { margin-top: 14px; }
+#view-learning .dsa-variable-panel h3 { font-size: .9rem; }
+#view-learning #dsa-variables {
+    max-height: 110px;
+    overflow: auto;
+    padding: 9px;
+    border-radius: 7px;
+    color: var(--dsa-code-text);
+    background: var(--dsa-code-bg);
+    font: 11px/1.5 var(--font-code, Consolas, monospace);
+}
+
+#view-learning .dsa-language-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dsa-text-secondary);
+}
+
+#view-learning .dsa-language-picker select {
+    padding: 8px 10px;
+    border: 1px solid var(--dsa-border);
+    border-radius: 7px;
+    color: var(--dsa-text);
+    background: var(--dsa-surface-2);
+}
+
+#view-learning #dsa-canvas {
+    display: block;
+    width: 100%;
+    height: clamp(280px, 42vh, 500px);
+    border: 1px solid var(--dsa-border);
+    border-radius: 9px;
+    background: var(--dsa-bg);
+}
+
+#view-learning .dsa-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+#view-learning .dsa-button {
+    padding: 8px 11px;
+    color: var(--dsa-text);
+    border: 1px solid var(--dsa-border);
+    border-radius: 7px;
+    background: var(--dsa-surface-2);
+    cursor: pointer;
+}
+
+#view-learning .dsa-button:hover:not(:disabled) {
+    border-color: var(--dsa-primary);
+}
+#view-learning .dsa-button:disabled { opacity: .45; cursor: not-allowed; }
+#view-learning .dsa-button-quiet { background: transparent; }
+#view-learning .dsa-speed-control { display: flex; align-items: center; gap: 7px; color: var(--dsa-text-secondary); }
+#view-learning .dsa-controls progress { flex: 1 1 100px; height: 8px; accent-color: var(--dsa-primary); }
+
+@media (max-width: 850px) {
+    #view-learning .dsa-workspace-grid { grid-template-columns: 1fr; }
+    #view-learning .dsa-workspace-heading { align-items: flex-start; }
+}
+
+@media (max-width: 560px) {
+    #view-learning .dsa-workspace-heading { gap: 10px; }
+    #view-learning .dsa-language-picker { justify-content: space-between; }
+    #view-learning .dsa-controls > * { flex: 1 1 40%; }
+}

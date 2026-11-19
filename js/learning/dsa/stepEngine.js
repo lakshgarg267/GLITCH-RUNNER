@@ -21,7 +21,7 @@
  * - Error handling
  */
 
-export class StepEngine {
+class StepEngine {
 
     constructor(options = {}) {
 
@@ -397,6 +397,10 @@ export class StepEngine {
         }
 
         this._emitState();
+
+        if (executionContext.isLastStep) {
+            this._complete();
+        }
 
         // Return execution information.
         return executionContext;
@@ -787,5 +791,38 @@ export class StepEngine {
 }
 
 
-// Default export.
-export default StepEngine;
+StepEngine.prototype.play = StepEngine.prototype.start;
+StepEngine.prototype.resume = StepEngine.prototype.start;
+StepEngine.prototype.next = StepEngine.prototype.nextStep;
+StepEngine.prototype.previous = function previous() {
+    if (this.steps.length === 0 || this.currentIndex < 0) return null;
+    this.pause();
+    this.currentIndex = Math.max(-1, this.currentIndex - 1);
+    this.currentStep = this.currentIndex >= 0 ? this.steps[this.currentIndex] : null;
+    this.isPaused = true;
+    if (this.currentStep) {
+        this._callCallback("onStep", {
+            index: this.currentIndex,
+            total: this.steps.length,
+            stepNumber: this.currentIndex + 1,
+            line: this.currentStep.line,
+            action: this.currentStep.action,
+            data: this.currentStep.data,
+            message: this.currentStep.message,
+            progress: ((this.currentIndex + 1) / this.steps.length) * 100,
+            isLastStep: false,
+            direction: "previous"
+        });
+    } else {
+        this._callCallback("onReset", this.getState());
+    }
+    this._emitState();
+    return this.currentStep;
+};
+
+if (typeof window !== "undefined") {
+    window.StepEngine = StepEngine;
+}
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = StepEngine;
+}

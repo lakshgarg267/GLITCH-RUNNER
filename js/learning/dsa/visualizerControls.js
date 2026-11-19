@@ -392,17 +392,15 @@
         syncFromEngine() {
             if (!this.engine) return;
 
-            if (typeof this.engine.getCurrentStep === "function") {
-                this.currentStep =
-                    this.engine.getCurrentStep();
+            if (Number.isInteger(this.engine.currentIndex)) {
+                this.currentStep = this.engine.currentIndex + 1;
             } else if (
                 Number.isFinite(this.engine.currentStep)
             ) {
                 this.currentStep = this.engine.currentStep;
-            } else if (
-                Number.isFinite(this.engine.currentIndex)
-            ) {
-                this.currentStep = this.engine.currentIndex;
+            } else if (typeof this.engine.getCurrentStep === "function") {
+                const step = this.engine.getCurrentStep();
+                this.currentStep = Number.isInteger(step) ? step : 0;
             }
 
             if (typeof this.engine.getTotalSteps === "function") {

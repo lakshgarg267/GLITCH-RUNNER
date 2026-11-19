@@ -1114,8 +1114,10 @@ const AnimationUtils = (() => {
 })();
 
 
-// Named export.
-export { AnimationUtils };
-
-// Default export.
-export default AnimationUtils;
+// Browser export (classic-script compatible).
+if (typeof window !== "undefined") {
+    window.AnimationUtils = AnimationUtils;
+}
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = AnimationUtils;
+}

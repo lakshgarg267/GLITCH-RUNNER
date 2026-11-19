@@ -29,6 +29,7 @@
             this.languageManager = options.languageManager || null;
             this.controls = options.controls || null;
             this.progressManager = options.progressManager || null;
+            this.algorithmModules = options.algorithmModules || {};
 
             this.currentTopic = null;
             this.currentAlgorithm = null;
@@ -115,6 +116,94 @@
         // =======================================
 
         connectModules() {
+
+            if (typeof this.engine.setCallbacks === "function") {
+                this.engine.setCallbacks({
+                    onStep: context => {
+                        this.syncState();
+                        this.highlightCodeLine(context.line);
+                        if (context.data && context.data.scene) {
+                            this.renderScene(context.data.scene);
+                        }
+                        const message = context.data && context.data.explanation;
+                        const messageElement = document.getElementById("dsa-step-message");
+                        if (messageElement) messageElement.textContent = message || context.message || "";
+                        const variablesElement = document.getElementById("dsa-variables");
+                        if (variablesElement && context.data) {
+                            variablesElement.textContent = JSON.stringify(
+                                context.data.snapshot && context.data.snapshot.variables
+                                    ? context.data.snapshot.variables
+                                    : context.data.variables || {},
+                                null,
+                                2
+                            );
+                        }
+                        if (this.statusElement) {
+                            this.statusElement.textContent = "Step " + context.stepNumber;
+                        }
+                        if (
+                            context.direction !== "previous" &&
+                            this.currentTopic &&
+                            this.progressManager
+                        ) {
+                            this.progressManager.recordStep(this.currentTopic.id, 1);
+                            this.progressManager.updateTopicProgress(
+                                this.currentTopic.id,
+                                context.progress,
+                                this.currentCategory
+                            );
+                        }
+                        this.emit("step-executed", context);
+                    },
+                    onStateChange: state => {
+                        this.state.status = state.isRunning
+                            ? "playing"
+                            : state.isPaused
+                                ? "paused"
+                                : state.isCompleted
+                                    ? "completed"
+                                    : this.state.status;
+                        this.syncState();
+                        if (this.controls) {
+                            this.controls.isPlaying = Boolean(state.isRunning);
+                            this.controls.syncFromEngine();
+                            this.controls.updateUI();
+                        }
+                    },
+                    onComplete: context => {
+                        this.setStatus("completed");
+                        this.checkCompletion();
+                        this.emit("execution-completed", { topic: this.currentTopic, context });
+                    },
+                    onReset: () => {
+                        this.state.step = 0;
+                        this.setStatus("ready");
+                        this.renderInitialScene();
+                        const initialStep = this.engine.steps[0];
+                        const messageElement = document.getElementById("dsa-step-message");
+                        if (messageElement) {
+                            messageElement.textContent = initialStep
+                                ? initialStep.data.explanation || initialStep.message
+                                : "Choose an algorithm to load its steps.";
+                        }
+                        const variablesElement = document.getElementById("dsa-variables");
+                        if (variablesElement) {
+                            const data = initialStep ? initialStep.data : null;
+                            variablesElement.textContent = JSON.stringify(
+                                data && data.snapshot && data.snapshot.variables
+                                    ? data.snapshot.variables
+                                    : data && data.variables || {},
+                                null,
+                                2
+                            );
+                        }
+                        if (this.codeElement) {
+                            this.codeElement.textContent = this.codeElement.textContent || "";
+                        }
+                    },
+                    onError: error => this.handleError(error)
+                });
+            }
 
             if (
                 typeof this.controls.setEngine === "function"
@@ -285,6 +374,13 @@
                 topic.id;
 
             this.currentAlgorithm = algorithmId;
+            if (typeof this.progressManager.updateTopicProgress === "function") {
+                this.progressManager.updateTopicProgress(
+                    topic.id,
+                    this.progressManager.getTopicProgress(topic.id),
+                    this.currentCategory
+                );
+            }
 
             try {
 
@@ -296,8 +392,7 @@
 
                 this.renderInitialScene();
 
-                this.state.step = 0;
-                this.state.totalSteps = 0;
+                this.loadAlgorithmSteps();
 
                 this.setStatus("ready");
 
@@ -312,6 +407,81 @@
 
                 return this.handleError(error);
             }
+        }
+
+        loadAlgorithmSteps(input = {}) {
+            this.ensureInitialized();
+
+            if (!this.currentAlgorithm) {
+                throw new Error("No algorithm is selected.");
+            }
+
+            const module = this.resolveAlgorithmModule(this.currentAlgorithm);
+            if (!module || typeof module.getSteps !== "function") {
+                throw new Error(
+                    `Algorithm implementation unavailable: ${this.currentAlgorithm}`
+                );
+            }
+
+            const generated = module.getSteps(this.currentAlgorithm, input);
+            if (!Array.isArray(generated) || generated.length === 0) {
+                throw new Error(
+                    `Algorithm returned no execution steps: ${this.currentAlgorithm}`
+                );
+            }
+
+            const codeLineCount = this.languageManager.getLineCount(
+                this.currentAlgorithm,
+                this.currentLanguage
+            );
+            const steps = generated.map((step, index) => {
+                const codeLine = step.codeLine;
+                const line = typeof codeLine === "number"
+                    ? codeLine
+                    : (codeLine && typeof codeLine === "object"
+                        ? Number(codeLine[this.currentLanguage] ?? codeLine.line ?? codeLine.python ?? 1)
+                        : 1);
+
+                return {
+                    line: Number.isInteger(line) && line > 0
+                        ? Math.min(line, codeLineCount)
+                        : 1,
+                    action: String(step.action || "inspect"),
+                    data: {
+                        scene: step.scene || null,
+                        snapshot: step.snapshot || null,
+                        variables: step.variables || {},
+                        title: step.title || "",
+                        explanation: step.explanation || step.message || ""
+                    },
+                    message: step.message || step.explanation || step.title || ""
+                };
+            });
+
+            this.engine.setSteps(steps);
+            this.syncState();
+            this.setStatus("ready");
+            return steps;
+        }
+
+        resolveAlgorithmModule(algorithmId) {
+            const direct = this.algorithmModules[algorithmId];
+            if (direct) return direct;
+
+            if (typeof this.algorithmModules.getModule === "function") {
+                return this.algorithmModules.getModule(algorithmId);
+            }
+
+            for (const module of Object.values(this.algorithmModules)) {
+                if (
+                    module &&
+                    typeof module.getAlgorithm === "function" &&
+                    module.getAlgorithm(algorithmId)
+                ) {
+                    return module;
+                }
+            }
+            return null;
         }
 
         // =======================================
@@ -353,6 +523,27 @@
             });
         }
 
+        highlightCodeLine(lineNumber) {
+            if (!this.codeElement || !Number.isInteger(lineNumber)) return;
+
+            const code = this.codeElement.textContent || "";
+            const lines = code.replace(/\r\n/g, "\n").split("\n");
+            const highlighted = lines.map((line, index) =>
+                index + 1 === lineNumber
+                    ? `<span class="dsa-code-line active">${this.escapeCodeLine(line)}</span>`
+                    : `<span class="dsa-code-line">${this.escapeCodeLine(line)}</span>`
+            ).join("\n");
+
+            this.codeElement.innerHTML = highlighted;
+        }
+
+        escapeCodeLine(line) {
+            return String(line)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
         // =======================================
         // TOPIC INFORMATION
         // =======================================
@@ -370,6 +561,14 @@
 
             if (this.descriptionElement) {
                 this.descriptionElement.textContent =
+                    this.currentTopic.description || "";
+            }
+            const explanationElement =
+                typeof document !== "undefined"
+                    ? document.getElementById("dsa-explanation")
+                    : null;
+            if (explanationElement) {
+                explanationElement.textContent =
                     this.currentTopic.description || "";
             }
         }
@@ -392,6 +591,9 @@
                 this.currentLanguage = selected.id;
 
                 this.loadCode();
+                if (this.currentTopic) {
+                    this.loadAlgorithmSteps();
+                }
 
                 this.emit("language-changed", {
                     language: selected.id
@@ -475,8 +677,6 @@
 
                 this.syncState();
 
-                this.recordStepProgress();
-
                 this.emit("step-changed", {
                     direction: "next",
                     result
@@ -559,8 +759,12 @@
             if (
                 typeof this.engine.getCurrentStep === "function"
             ) {
-                this.state.step =
-                    this.engine.getCurrentStep();
+                const currentStep = this.engine.getCurrentStep();
+                this.state.step = typeof currentStep === "number"
+                    ? currentStep
+                    : (Number.isInteger(this.engine.currentIndex)
+                        ? this.engine.currentIndex + 1
+                        : 0);
 
             } else if (
                 Number.isFinite(this.engine.currentStep)
@@ -601,29 +805,45 @@
         // =======================================
 
         renderInitialScene() {
-
             if (!this.renderer) return;
+            this.renderScene({
+                type: this.sceneTypeForTopic(this.currentTopic),
+                items: [],
+                nodes: [],
+                pointers: [],
+                edges: [],
+                status: "Ready",
+                meta: { topicId: this.currentTopic.id }
+            });
+        }
 
-            if (
-                typeof this.renderer.setScene === "function"
-            ) {
-                this.renderer.setScene({
-                    type: this.currentTopic.visualType || "array",
-                    items: [],
-                    pointers: [],
-                    edges: [],
-                    status: "Ready",
-                    meta: {
-                        topicId: this.currentTopic.id
-                    }
-                });
-            }
-
-            if (
-                typeof this.renderer.render === "function"
-            ) {
-                this.renderer.render();
-            }
+        sceneTypeForTopic(topic) {
+            const type = topic && (topic.visualizer || topic.visualType);
+            const map = {
+                "array-search": "search",
+                "binary-search": "search",
+                "merge-sort": "sorting",
+                "quick-sort": "sorting",
+                "string-reverse": "string",
+                palindrome: "string",
+                anagram: "string",
+                "call-stack": "recursion",
+                "recursion-tree": "recursion",
+                backtracking: "recursion",
+                "linked-list-reverse": "linked-list",
+                bst: "tree",
+                "tree-traversal": "tree",
+                "graph-bfs": "graph",
+                "graph-dfs": "graph",
+                "graph-dijkstra": "graph",
+                "tower-of-hanoi": "hanoi",
+            };
+            const supported = [
+                "array", "sorting", "search", "sliding-window", "string",
+                "linked-list", "stack", "queue", "circular-queue",
+                "tree", "graph", "recursion", "hanoi", "maze"
+            ];
+            return map[type] || (supported.includes(type) ? type : "array");
         }
 
         renderScene(scene) {
@@ -635,7 +855,28 @@
             if (
                 typeof this.renderer.setScene === "function"
             ) {
-                this.renderer.setScene(scene);
+                const supported = [
+                    "array", "sorting", "search", "sliding-window", "string",
+                    "linked-list", "stack", "queue", "circular-queue",
+                    "tree", "graph", "recursion", "hanoi", "maze"
+                ];
+                const type = supported.includes(scene.type)
+                    ? scene.type
+                    : this.sceneTypeForTopic(this.currentTopic);
+                this.renderer.setScene(type);
+                if (typeof this.renderer.setData === "function") {
+                    this.renderer.setData({
+                        ...scene,
+                        elements: scene.items || scene.elements || [],
+                        nodes: scene.nodes || [],
+                        edges: scene.edges || [],
+                        pointers: scene.pointers || [],
+                        frames: scene.frames || []
+                    });
+                }
+                if (typeof this.renderer.setStatus === "function") {
+                    this.renderer.setStatus(scene.status || "Running");
+                }
             }
 
             if (

@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/dsa_visualizer.css">
+  <link rel="stylesheet" href="css/learning.css">
 </head>
 <body>
 
@@ -83,6 +85,9 @@
       </button>
       <button class="nav-tab" data-view="worlds">
         <span>🌍</span> <span>WORLDS</span>
+      </button>
+      <button class="nav-tab" data-view="learning">
+        <span>🧠</span> <span>LEARNING</span>
       </button>
       <button class="nav-tab" onclick="window.App.openProfileModal()">
         <span>👤</span> <span>PROFILE</span>
@@ -201,6 +206,67 @@
         <div class="worlds-grid" id="all-worlds-grid">
           <!-- Populated dynamically via JS -->
         </div>
+      </section>
+
+      <section id="view-learning" class="view-section">
+        <div class="learning-heading">
+          <div>
+            <p class="learning-eyebrow">CODE ARENAA • DSA PATH</p>
+            <h1 class="learning-title">Data Structures &amp; Algorithms</h1>
+            <p class="learning-lede">Explore concepts step by step with executable visual traces.</p>
+          </div>
+          <div class="learning-overview" aria-live="polite">
+            <strong><span id="learning-completed-count">0</span>/<span id="learning-total-count">0</span></strong>
+            <span>algorithms completed</span>
+            <div class="learning-progress-track"><span id="learning-progress-fill"></span></div>
+          </div>
+        </div>
+
+        <div id="learning-dashboard">
+          <div id="learning-category-grid" class="learning-category-grid"></div>
+          <section id="learning-topic-panel" class="learning-topic-panel dsa-hidden">
+            <div class="learning-panel-heading">
+              <button type="button" class="dsa-button dsa-button-quiet" id="learning-back-categories">← Categories</button>
+              <div><h2 id="learning-category-title"></h2><p id="learning-category-description"></p></div>
+            </div>
+            <div id="learning-topic-grid" class="learning-topic-grid"></div>
+          </section>
+        </div>
+
+        <section id="learning-workspace" class="learning-workspace dsa-hidden">
+          <div class="learning-workspace-heading">
+            <button type="button" class="dsa-button dsa-button-quiet" id="learning-back-topics">← Topics</button>
+            <div><h2 id="dsa-topic-title">Choose an algorithm</h2><p id="dsa-topic-description"></p></div>
+            <label class="dsa-language-picker">Language
+              <select id="dsa-language">
+                <option value="python">Python</option><option value="javascript">JavaScript</option>
+                <option value="cpp">C++</option><option value="java">Java</option>
+              </select>
+            </label>
+          </div>
+          <div class="dsa-workspace-grid">
+            <section class="dsa-panel dsa-code-panel">
+              <div class="dsa-panel-title"><span>Algorithm trace</span><span id="dsa-status" class="dsa-status">Ready</span></div>
+              <p id="dsa-explanation" class="dsa-explanation">Select an algorithm to begin.</p>
+              <div class="dsa-code-wrap"><pre id="dsa-code" class="dsa-code" aria-label="Algorithm source code"></pre></div>
+              <div class="dsa-variable-panel"><h3>Current step</h3><p id="dsa-step-message">Choose an algorithm to load its steps.</p><pre id="dsa-variables">{}</pre></div>
+            </section>
+            <section class="dsa-panel dsa-visual-panel">
+              <div class="dsa-panel-title"><span>Live visualization</span><span id="dsa-scene-label">Canvas</span></div>
+              <canvas id="dsa-canvas" aria-label="Algorithm visualization canvas"></canvas>
+              <div class="dsa-controls" id="dsa-controls">
+                <button type="button" class="dsa-button" data-dsa-control="play">▶ Start / Resume</button>
+                <button type="button" class="dsa-button" data-dsa-control="pause">Ⅱ Pause</button>
+                <button type="button" class="dsa-button" data-dsa-control="previous">← Previous</button>
+                <button type="button" class="dsa-button" data-dsa-control="next">Next →</button>
+                <button type="button" class="dsa-button dsa-button-quiet" data-dsa-control="reset">Reset</button>
+                <label class="dsa-speed-control">Speed <input type="range" min="0.25" max="3" step="0.25" value="1" data-dsa-control="speed"><span id="dsa-speed-value">1×</span></label>
+                <progress max="100" value="0" data-dsa-control="progress"></progress>
+                <span data-dsa-control="progress-text">0 / 0</span>
+              </div>
+            </section>
+          </div>
+        </section>
       </section>
 
       <!-- VIEW 3: LANGUAGE WORLD LEVEL MAP (7 SECTORS / 51 LEVELS) -->
@@ -632,6 +698,7 @@
               <option value="matrix">3. The Matrix (OLED Black &amp; Digital Rain)</option>
               <option value="space-station">4. Space Station (Pulsar Blue &amp; Celestial)</option>
               <option value="retro-terminal">5. Retro Terminal (Amber Phosphor CRT)</option>
+              <option value="light">6. Light Study</option>
             </select>
           </div>
 
@@ -673,6 +740,22 @@
   <script src="js/achievements.js"></script>
   <script src="js/daily.js"></script>
   <script src="js/leaderboard.js"></script>
+  <script src="js/learning/dsa/animationUtils.js"></script>
+  <script src="js/learning/dsa/topicRegistry.js"></script>
+  <script src="js/learning/dsa/stepEngine.js"></script>
+  <script src="js/learning/dsa/canvasRenderer.js"></script>
+  <script src="js/learning/dsa/languageManager.js"></script>
+  <script src="js/learning/dsa/visualizerControls.js"></script>
+  <script src="js/learning/dsa/progressManager.js"></script>
+  <script src="js/learning/dsa/algorithms/arrayAlgorithms.js"></script>
+  <script src="js/learning/dsa/algorithms/stringAlgorithms.js"></script>
+  <script src="js/learning/dsa/algorithms/sortingAlgorithms.js"></script>
+  <script src="js/learning/dsa/algorithms/recursionAlgorithms.js"></script>
+  <script src="js/learning/dsa/algorithms/linkedListAlgorithms.js"></script>
+  <script src="js/learning/dsa/algorithms/stacksQueueAlgorithms.js"></script>
+  <script src="js/learning/dsa/algorithms/treeAlgorithms.js"></script>
+  <script src="js/learning/dsa/algorithms/graphAlgorithms.js"></script>
+  <script src="js/learning/dsa/dsaController.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

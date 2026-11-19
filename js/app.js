@@ -43,6 +43,9 @@ class AppController {
     if (viewId === 'worlds') {
       this.renderWorldsGrid();
     }
+    if (viewId === 'learning') {
+      this.renderLearningDashboard();
+    }
   }
 
   // Update HUD elements across the app
@@ -210,6 +213,29 @@ class AppController {
       });
     });
 
+    document.getElementById('learning-back-categories')?.addEventListener('click', () => {
+      document.getElementById('learning-topic-panel').classList.add('dsa-hidden');
+      document.getElementById('learning-category-grid').classList.remove('dsa-hidden');
+    });
+    document.getElementById('learning-back-topics')?.addEventListener('click', () => {
+      document.getElementById('learning-workspace').classList.add('dsa-hidden');
+      document.getElementById('learning-dashboard').classList.remove('dsa-hidden');
+      if (this.activeLearningCategory) {
+        this.openLearningCategory(this.activeLearningCategory);
+      } else {
+        this.renderLearningDashboard();
+      }
+    });
+    document.getElementById('dsa-language')?.addEventListener('change', event => {
+      if (window.DSAControllerInstance) {
+        window.DSAControllerInstance.changeLanguage(event.target.value);
+      }
+    });
+    document.querySelector('[data-dsa-control="speed"]')?.addEventListener('input', event => {
+      const label = document.getElementById('dsa-speed-value');
+      if (label) label.textContent = `${event.target.value}×`;
+    });
+
     // HUD Action buttons
     document.getElementById('btn-hud-sound')?.addEventListener('click', () => {
       const enabled = window.Sound.toggleSound();
@@ -351,6 +377,7 @@ class AppController {
       window.GameState.data.customization.activeTheme = selected;
       window.GameState.save();
       document.documentElement.setAttribute('data-theme', selected);
+      if (window.DSARendererInstance) window.DSARendererInstance.syncTheme();
       if (window.VisualFx) window.VisualFx.toast(`Theme shifted to ${selected.toUpperCase()}`, '🎨', 'info');
     });
 
@@ -369,6 +396,129 @@ class AppController {
         if (optBtn) optBtn.click();
       } else if (e.key === 'Escape') {
         document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+      }
+    });
+  }
+
+  renderLearningDashboard() {
+    if (!window.DSAProgressInstance && window.ProgressManager) {
+      window.DSAProgressInstance = new window.ProgressManager();
+    }
+    const categories = window.TopicRegistry?.getAllCategories() || [];
+    const progress = window.DSAProgressInstance;
+    const completed = progress ? progress.getCompletedTopics().length : 0;
+    const total = categories.reduce((sum, category) => sum + category.topics.length, 0);
+    const completedEl = document.getElementById('learning-completed-count');
+    const totalEl = document.getElementById('learning-total-count');
+    const fill = document.getElementById('learning-progress-fill');
+    if (completedEl) completedEl.textContent = String(completed);
+    if (totalEl) totalEl.textContent = String(total);
+    if (fill) fill.style.width = `${total ? Math.min(100, completed / total * 100) : 0}%`;
+
+    const grid = document.getElementById('learning-category-grid');
+    if (!grid) return;
+    const icons = { arrays: '▦', strings: 'Aa', sorting: '↕', recursion: '⟳', 'linked-list': '↪', 'stacks-queues': '▤', trees: '⑂', graphs: '◉' };
+    grid.innerHTML = categories.map(category => {
+      const categoryProgress = progress ? progress.getCategoryProgress(category.id) : 0;
+      return `<button type="button" class="learning-category-card" data-learning-category="${category.id}">
+        <span class="learning-category-icon">${icons[category.id] || '◇'}</span>
+        <span class="learning-category-count">${category.topics.length} algorithms</span>
+        <h2>${category.title}</h2><p>${category.description}</p>
+        <span class="learning-category-progress">${Math.round(categoryProgress)}% complete</span>
+        <span class="learning-progress-track"><span style="width:${categoryProgress}%"></span></span>
+      </button>`;
+    }).join('');
+    grid.querySelectorAll('[data-learning-category]').forEach(card => {
+      card.addEventListener('click', () => this.openLearningCategory(card.dataset.learningCategory));
+    });
+    document.getElementById('learning-topic-panel').classList.add('dsa-hidden');
+    document.getElementById('learning-category-grid').classList.remove('dsa-hidden');
+    document.getElementById('learning-workspace').classList.add('dsa-hidden');
+    document.getElementById('learning-dashboard').classList.remove('dsa-hidden');
+  }
+
+  openLearningCategory(categoryId) {
+    const category = window.TopicRegistry.getCategory(categoryId);
+    if (!category) return;
+    this.activeLearningCategory = categoryId;
+    const progress = window.DSAProgressInstance;
+    document.getElementById('learning-category-title').textContent = category.title;
+    document.getElementById('learning-category-description').textContent = category.description;
+    const grid = document.getElementById('learning-topic-grid');
+    grid.innerHTML = category.topics.map(topic => {
+      const percentage = progress ? progress.getTopicProgress(topic.id) : 0;
+      const done = progress && progress.isTopicCompleted(topic.id);
+      return `<button type="button" class="learning-topic-card" data-learning-topic="${topic.id}">
+        <span class="learning-topic-meta">${topic.difficulty} · ${topic.complexity}</span>
+        <h3>${topic.title}${done ? ' ✓' : ''}</h3><p>${topic.description}</p>
+        <span class="learning-progress-track"><span style="width:${percentage}%"></span></span>
+      </button>`;
+    }).join('');
+    grid.querySelectorAll('[data-learning-topic]').forEach(card => {
+      card.addEventListener('click', () => this.openDSAVisualizer(card.dataset.learningTopic));
+    });
+    document.getElementById('learning-category-grid').classList.add('dsa-hidden');
+    document.getElementById('learning-topic-panel').classList.remove('dsa-hidden');
+  }
+
+  initializeDSA() {
+    if (window.DSAControllerInstance) return true;
+    const modules = {
+      array: new window.ArrayAlgorithms(),
+      string: new window.StringAlgorithms(),
+      sorting: new window.SortingAlgorithms(),
+      recursion: new window.RecursionAlgorithms(),
+      linkedList: new window.LinkedListAlgorithms(),
+      stackQueue: new window.StackQueueAlgorithms(),
+      tree: new window.TreeAlgorithms(),
+      graph: new window.GraphAlgorithms()
+    };
+    const renderer = new window.CanvasRenderer(document.getElementById('dsa-canvas'));
+    const engine = new window.StepEngine();
+    const languageManager = new window.LanguageManager();
+    const progressManager = window.DSAProgressInstance || new window.ProgressManager();
+    const controls = new window.VisualizerControls({
+      container: document.getElementById('dsa-controls'),
+      engine
+    });
+    const controller = new window.DSAController({
+      registry: window.TopicRegistry,
+      engine,
+      renderer,
+      languageManager,
+      controls,
+      progressManager,
+      algorithmModules: modules,
+      codeElement: document.getElementById('dsa-code'),
+      statusElement: document.getElementById('dsa-status'),
+      topicTitleElement: document.getElementById('dsa-topic-title'),
+      descriptionElement: document.getElementById('dsa-topic-description')
+    });
+    controller.initialize();
+    window.DSAControllerInstance = controller;
+    window.DSARendererInstance = renderer;
+    window.DSAProgressInstance = progressManager;
+    window.DSAEngineInstance = engine;
+    window.DSAControlsInstance = controls;
+    return true;
+  }
+
+  openDSAVisualizer(topicId) {
+    document.getElementById('learning-dashboard').classList.add('dsa-hidden');
+    document.getElementById('learning-workspace').classList.remove('dsa-hidden');
+    requestAnimationFrame(() => {
+      try {
+        this.initializeDSA();
+        const topic = window.DSAControllerInstance.loadTopic(topicId);
+        if (!topic) throw new Error(`Could not load topic: ${topicId}`);
+        const select = document.getElementById('dsa-language');
+        if (select) select.value = window.DSAControllerInstance.currentLanguage;
+        const sceneLabel = document.getElementById('dsa-scene-label');
+        if (sceneLabel) sceneLabel.textContent = topic.visualizer || 'Canvas';
+      } catch (error) {
+        console.error('Unable to open DSA visualizer:', error);
+        const status = document.getElementById('dsa-status');
+        if (status) status.textContent = error.message;
       }
     });
   }
